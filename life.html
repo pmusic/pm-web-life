@@ -4,8 +4,8 @@
 <style type="text/css">
 
 #ecosystem {
-	width:1000px;
-	height:1000px;
+	width:800px;
+	height:800px;
 	border:black 1px solid;
 	position:relative;
 }
@@ -19,149 +19,152 @@
 }
 
 .square {
-	width:25px;
-	height:25px;
+	width:20px;
+	height:20px;
 	position:absolute;
 }
 </style>
 
 <script>
-
-// number of boxes 
-var width = 40;
-var height = 40;
-//Size of square in px.
-var square = 25;
-// id for setInterval
-var interval = null;
-
-
-/** 
-creates 2d array
+/**
+Game class
 */
-function createGrid(){
-	var g = new Array(height);
-	for( var x=0; x<height; x++ ){
-		g[x] = new Array(width);
+function game(){
+	
+	//default values
+	this.width = 40;
+	this.height = 40;
+	//size of square in px
+	this.square = 20;
+
+	this.createGrid = function(){
+		var g = new Array(this.height);
+		for( var x=0; x<this.height; x++ ){
+			g[x] = new Array(this.width);
+		}
+		return g;
 	}
 
-	return g;
-}
+	this.tick = function(){
+		var tempGrid = this.createGrid();
 
-// create faux-2d array
-var grid = createGrid();
+		for( var x=0; x<this.width; x++ ){
+			for( var y=0; y<this.height; y++ ){
+				var neighbors = this.countNeighbors( x, y );
 
+				if( this.grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
+					tempGrid[x][y] = true;
+				} else if( this.grid[x][y] == null && neighbors == 3 ){ 
+					tempGrid[x][y] = true;
+				}
+			}
+		}
 
-window.onload = function setup(){
+		this.grid = tempGrid;
+		this.draw();
+	}
+
+	this.draw = function(){
+		for( var x=0; x<this.width; x++ ){
+			for( var y=0; y<this.height; y++ ){
+				var div = document.getElementById( 'b-' + x + '-' + y );
+				if( this.grid[x][y] ){
+					div.className = 'square on';
+				} else {
+					div.className = 'square off';
+				}
+			}
+		}
+	}
+
+	this.countNeighbors = function( x, y ){
+	
+		var neighbors = 0;
+		for( var m = x-1; m<=x+1; m++ ){
+			for( var n = y-1; n<=y+1; n++ ){
+				if( (m==x && n==y ) || m<0 || n<0 || m>=this.width || n>=this.height){
+					continue;
+				}
+				if( this.grid[m][n] ){
+					neighbors++;
+				}
+			}
+		}
+		return neighbors;
+	}
+
+	/**
+	Called when a box is clicked
+	*/
+	this.clicked = function( x, y ){
+
+		// update grid
+		if(	this.grid[x][y] == null ){
+			this.grid[x][y] = true;
+			document.getElementById( 'b-' + x + '-' + y ).className = 'square on';
+		} else {
+			this.grid[x][y] = null;
+			document.getElementById( 'b-' + x + '-' + y ).className = 'square off';
+		}
+	}
+
+	/**
+	clear grid
+	*/
+	this.clearGrid = function(){
+		this.grid = createGrid();
+		this.draw();
+	}
+
+	this.randomize = function(){
+		// Odds that any give square will be alive
+		var odds = .4;
+
+		for( var x=0; x<this.width; x++ ){
+			for( var y=0; y<this.height; y++ ){
+				if( Math.random() > odds ){
+					this.grid[x][y] = true;
+				} else {
+					this.grid[x][y] = null;
+				}
+			}
+		}
+		this.draw();
+	}
+
+	//////////////////
+	//constructor code
+	this.grid = this.createGrid();
 
 	var ecosystem = document.getElementById('ecosystem');
 
-	for( var x=0; x<width; x++ ){
-		for( var y=0; y<height; y++ ){
+	for( var x=0; x<this.width; x++ ){
+		for( var y=0; y<this.height; y++ ){
 			var box = document.createElement('div');
 			box.id = 'b-' + x + '-' + y;
 			box.className = 'square off';
-			box.style.top = y*square + 'px';
-			box.style.left = x*square + 'px';
-			box.setAttribute( 'onclick', 'javascript:clicked(\''+x+'\', \''+y+'\')' );
+			box.style.top = y*this.square + 'px';
+			box.style.left = x*this.square + 'px';
+			box.setAttribute( 'onclick', 'javascript:game.clicked(\''+x+'\', \''+y+'\')' );
 
 			ecosystem.appendChild( box );
 		}
 	}
+}
+
+
+
+window.onload = function setup(){
+	game = new game();
 } //end setup()
 
-
-function tick(){
-	var tempGrid = createGrid();
-
-	for( var x=0; x<width; x++ ){
-		for( var y=0; y<height; y++ ){
-			var neighbors = countNeighbors( x, y );
-
-			if( grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
-				tempGrid[x][y] = true;
-			} else if( grid[x][y] == null && neighbors == 3 ){ 
-				tempGrid[x][y] = true;
-			}
-		}
-	}
-
-	grid = tempGrid;
-	drawGame();
-}
-
-/**
-
-*/
-function drawGame(){
-	for( var x=0; x<width; x++ ){
-		for( var y=0; y<height; y++ ){
-			var div = document.getElementById( 'b-' + x + '-' + y );
-			if( grid[x][y] ){
-				div.className = 'square on';
-			} else {
-				div.className = 'square off';
-			}
-		}
-	}
-}
-
-function randomizeGame(){
-
-	// Odds that any give square will be alive
-	var odds = .5;
-
-	for( var x=0; x<width; x++ ){
-		for( var y=0; y<height; y++ ){
-			if( Math.random() > odds ){
-				grid[x][y] = true;
-			} else {
-				grid[x][y] = null;
-			}
-		}
-	}
-	drawGame();
-}
-
-/**
-@return int
-*/
-function countNeighbors( x, y ){
-	
-	var neighbors = 0;
-	for( var m = x-1; m<=x+1; m++ ){
-		for( var n = y-1; n<=y+1; n++ ){
-			if( (m==x && n==y ) || m<0 || n<0 || m>=width || n>=height){
-				continue;
-			}
-			if( grid[m][n] ){
-				neighbors++;
-			}
-		}
-	}
-	return neighbors;		
-}
-
-/**
-Called when a box is clicked
-*/
-function clicked( x, y ){
-
-	// update grid
-	if(	grid[x][y] == null ){
-		grid[x][y] = true;
-		document.getElementById( 'b-' + x + '-' + y ).className = 'square on';
-	} else {
-		grid[x][y] = null;
-		document.getElementById( 'b-' + x + '-' + y ).className = 'square off';
-	}
-}
-
+//identifier for timer.
+var interval = null;
 function playpause(){
 
 	var button = document.getElementById('playpause');
 	if( interval === null ){ //not running; start
-		interval = setInterval( function(){tick()},1000 );
+		interval = setInterval( function(){game.tick()},1000 );
 		button.innerHTML = 'Pause';
 	} else {
 		clearInterval( interval );
@@ -170,24 +173,17 @@ function playpause(){
 	}
 }
 
-/**
-clear grid
-*/
-function clearGrid(){
-	grid = createGrid();
-	drawGame();
-}
+
 
 </script>
-
 </head>
 <body>
 
 <div id="ecosystem">
 </div>
-<button onclick="javascript:tick()">Step</button>
+<button onclick="javascript:game.tick()">Step</button>
 <button onclick="javascript:playpause()" id="playpause">Play</button>
-<button onclick="javascript:clearGrid()">Clear</button>
-<button onclick="javascript:randomizeGame()">Randomize</button>
+<button onclick="javascript:game.clearGrid()">Clear</button>
+<button onclick="javascript:game.randomize()">Randomize</button>
 </body>
 </html>
