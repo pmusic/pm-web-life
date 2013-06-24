@@ -3,9 +3,7 @@
 <head>
 <style type="text/css">
 
-#ecosystem {
-	width:800px;
-	height:800px;
+#world {
 	border:black 1px solid;
 	position:relative;
 }
@@ -24,165 +22,22 @@
 	position:absolute;
 }
 </style>
-
+<script src="js/life.js"></script>
+<script src="js/HTMLCanvas.js"></script>
 <script>
-/**
-Game class
-*/
-function game(){
-	
-	//default values
-	this.width = 40;
-	this.height = 40;
-	//size of square in px
-	this.square = 20;
-
-	this.createGrid = function(){
-		var g = new Array(this.height);
-		for( var x=0; x<this.height; x++ ){
-			g[x] = new Array(this.width);
-		}
-		return g;
+	window.onload = function setup(){
+		world = new world( 40,40 );
+		canvas = new HTMLCanvas( world, 15 );
+		canvasElement = canvas.getElement();
+		document.getElementById('body').appendChild( canvasElement );
+		canvas.draw();
 	}
-
-	this.tick = function(){
-		var tempGrid = this.createGrid();
-
-		for( var x=0; x<this.width; x++ ){
-			for( var y=0; y<this.height; y++ ){
-				var neighbors = this.countNeighbors( x, y );
-
-				if( this.grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
-					tempGrid[x][y] = true;
-				} else if( this.grid[x][y] == null && neighbors == 3 ){ 
-					tempGrid[x][y] = true;
-				}
-			}
-		}
-
-		this.grid = tempGrid;
-		this.draw();
-	}
-
-	this.draw = function(){
-		for( var x=0; x<this.width; x++ ){
-			for( var y=0; y<this.height; y++ ){
-				var div = document.getElementById( 'b-' + x + '-' + y );
-				if( this.grid[x][y] ){
-					div.className = 'square on';
-				} else {
-					div.className = 'square off';
-				}
-			}
-		}
-	}
-
-	this.countNeighbors = function( x, y ){
-	
-		var neighbors = 0;
-		for( var m = x-1; m<=x+1; m++ ){
-			for( var n = y-1; n<=y+1; n++ ){
-				if( (m==x && n==y ) || m<0 || n<0 || m>=this.width || n>=this.height){
-					continue;
-				}
-				if( this.grid[m][n] ){
-					neighbors++;
-				}
-			}
-		}
-		return neighbors;
-	}
-
-	/**
-	Called when a box is clicked
-	*/
-	this.clicked = function( x, y ){
-
-		// update grid
-		if(	this.grid[x][y] == null ){
-			this.grid[x][y] = true;
-			document.getElementById( 'b-' + x + '-' + y ).className = 'square on';
-		} else {
-			this.grid[x][y] = null;
-			document.getElementById( 'b-' + x + '-' + y ).className = 'square off';
-		}
-	}
-
-	/**
-	clear grid
-	*/
-	this.clearGrid = function(){
-		this.grid = createGrid();
-		this.draw();
-	}
-
-	this.randomize = function(){
-		// Odds that any give square will be alive
-		var odds = .4;
-
-		for( var x=0; x<this.width; x++ ){
-			for( var y=0; y<this.height; y++ ){
-				if( Math.random() > odds ){
-					this.grid[x][y] = true;
-				} else {
-					this.grid[x][y] = null;
-				}
-			}
-		}
-		this.draw();
-	}
-
-	//////////////////
-	//constructor code
-	this.grid = this.createGrid();
-
-	var ecosystem = document.getElementById('ecosystem');
-
-	for( var x=0; x<this.width; x++ ){
-		for( var y=0; y<this.height; y++ ){
-			var box = document.createElement('div');
-			box.id = 'b-' + x + '-' + y;
-			box.className = 'square off';
-			box.style.top = y*this.square + 'px';
-			box.style.left = x*this.square + 'px';
-			box.setAttribute( 'onclick', 'javascript:game.clicked(\''+x+'\', \''+y+'\')' );
-
-			ecosystem.appendChild( box );
-		}
-	}
-}
-
-
-
-window.onload = function setup(){
-	game = new game();
-} //end setup()
-
-//identifier for timer.
-var interval = null;
-function playpause(){
-
-	var button = document.getElementById('playpause');
-	if( interval === null ){ //not running; start
-		interval = setInterval( function(){game.tick()},1000 );
-		button.innerHTML = 'Pause';
-	} else {
-		clearInterval( interval );
-		interval = null;
-		button.innerHTML = 'Play';
-	}
-}
-
-
-
 </script>
 </head>
-<body>
+<body id="body">
 
-<div id="ecosystem">
-</div>
 <button onclick="javascript:game.tick()">Step</button>
-<button onclick="javascript:playpause()" id="playpause">Play</button>
+<button onclick="javascript:game.playPause()" id="playpause">Play</button>
 <button onclick="javascript:game.clearGrid()">Clear</button>
 <button onclick="javascript:game.randomize()">Randomize</button>
 </body>
