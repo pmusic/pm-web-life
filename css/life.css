@@ -1,0 +1,14 @@
+#frame {
+  border:black 1px solid;
+  position:relative;
+}
+
+.on {
+  background-color:red;
+  position:absolute;
+}
+
+.off {
+  background-color:gray;
+  position:absolute;
+}

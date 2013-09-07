@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<!--
+Game of Life.
+
+Alex Bundy, 2013
+alex@planetariummusic.com
+
+Load it into your browser and play
+-->
+<style type="text/css">
+
+#ecosystem {
+	border:black 1px solid;
+	position:relative;
+}
+
+.on{
+	background-color:blue;
+}
+
+.off{
+	background-color:gray;
+}
+
+.square {
+	position:absolute;
+}
+</style>
+
+<script>
+
+// number of boxes
+var width = 40;
+var height = 40;
+//Size of square in px.
+var square = 15;
+// id for setInterval
+var interval = null;
+
+
+/**
+creates 2d array
+*/
+function createGrid(){
+	var g = new Array(height);
+	for( var x=0; x<height; x++ ){
+		g[x] = new Array(width);
+	}
+	return g;
+}
+
+// create faux-2d array
+var grid = createGrid();
+
+
+window.onload = function setup(){
+
+	var ecosystem = document.getElementById('ecosystem');
+	ecosystem.style.width = ( width * square ) + 'px';
+	ecosystem.style.height = ( height * square ) + 'px';
+
+	for( var x=0; x<width; x++ ){
+		for( var y=0; y<height; y++ ){
+			var box = document.createElement('div');
+			box.id = 'b-' + x + '-' + y;
+			box.className = 'square off';
+			box.style.width = square + 'px';
+			box.style.height = square + 'px';
+			box.style.top = y*square + 'px';
+			box.style.left = x*square + 'px';
+			box.setAttribute( 'onclick', 'javascript:clicked(\''+x+'\', \''+y+'\')' );
+
+			ecosystem.appendChild( box );
+		}
+	}
+} //end setup()
+
+/**
+Step forward one unit of time.
+*/
+function tick(){
+	var tempGrid = createGrid();
+
+	for( var x=0; x<width; x++ ){
+		for( var y=0; y<height; y++ ){
+			var neighbors = countNeighbors( x, y );
+
+			if( grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
+				tempGrid[x][y] = true;
+			} else if( grid[x][y] == null && neighbors == 3 ){
+				tempGrid[x][y] = true;
+			}
+		}
+	}
+
+	grid = tempGrid;
+	drawGame();
+}
+
+function drawGame(){
+
+	for( var x=0; x<width; x++ ){
+		for( var y=0; y<height; y++ ){
+			var div = document.getElementById( 'b-' + x + '-' + y );
+			if( grid[x][y] ){
+				div.className = 'square on';
+			} else {
+				div.className = 'square off';
+			}
+		}
+	}
+}
+
+
+function countNeighbors( x, y ){
+	var neighbors = 0;
+	for( var m = x-1; m<=x+1; m++ ){
+		for( var n = y-1; n<=y+1; n++ ){
+			if( (m==x && n==y ) || m<0 || n<0 || m>=width || n>=height){
+				continue;
+			}
+			if( grid[m][n] ){
+				neighbors++;
+			}
+		}
+	}
+	return neighbors;
+}
+
+
+function clicked( x, y ){
+
+	// update grid
+	if(	grid[x][y] == null ){
+		grid[x][y] = true;
+		document.getElementById( 'b-' + x + '-' + y ).className = 'square on';
+	} else {
+		grid[x][y] = null;
+		document.getElementById( 'b-' + x + '-' + y ).className = 'square off';
+	}
+}
+/*
+Create random world
+*/
+function random(){
+var odds = .3;
+
+        for( var x=0; x<width; x++ ){
+            for( var y=0; y<height; y++ ){
+                if( Math.random() < odds ){
+                    grid[x][y] = true;
+                } else {
+                    grid[x][y] = null;
+                }
+            }
+        }
+        drawGame();
+}
+/**
+Start/stop the game
+*/
+function playpause(){
+
+	var button = document.getElementById('playpause');
+	if( interval === null ){ //not running; start
+		interval = setInterval( function(){tick()},1000 );
+		button.innerHTML = 'Pause';
+	} else {
+		clearInterval( interval );
+		interval = null;
+		button.innerHTML = 'Play';
+	}
+}
+
+/**
+clear grid
+*/
+function clearGrid(){
+	grid = createGrid();
+	drawGame();
+}
+/*
+TODO
+
+* Allow user to save/load worlds
+* Provide a few interesting worlds to load
+* Scale to screen size, especially for phones/tablets
+* Let touch-screen users create sets of live cells by dragging
+
+*/
+
+</script>
+
+</head>
+<body>
+<h1>Conway's Game of Life!</h1>
+<p>A pure Javascript/CSS/HTML5 implementation.</p>
+<p>See: <a href="http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Wikipedia</a> for how to play. Click to create live cells.</p>
+<div id="ecosystem"></div>
+<button onclick="javascript:tick()">Step</button>
+<button onclick="javascript:playpause()" id="playpause">Play</button>
+<button onclick="javascript:clearGrid()">Clear</button>
+<button onclick="javascript:random()">Random world</button>
+</body>
+</html>

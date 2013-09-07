@@ -1,6 +1,16 @@
 /**
 */
-var $jq = jQuery.noConflict();
+//var $jq = jQuery.noConflict();
+
+var GameOfLife = function(){
+  this.World = function(x, y){
+    this.x = x;
+    this.y = y;
+    
+  };
+  
+};
+
 
 var HTMLCanvas = Class.create({
 	initialize: function( world, squareSize ){
