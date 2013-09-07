@@ -75,21 +75,6 @@ function world( width, height ){
 			}
 		}
 	}
-	
-	function playPause(){
-
-		var button = document.getElementById('playpause');
-		if( interval === null ){ //not running; start
-			interval = setInterval( function(){game.tick()},1000 );
-			button.innerHTML = 'Pause';
-		} else {
-			clearInterval( interval );
-			interval = null;
-			button.innerHTML = 'Play';
-		}
-	}
-	
-
 	//////////////////
 	//constructor code
 	this.grid = this.createGrid();

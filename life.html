@@ -3,42 +3,40 @@
 <head>
 <style type="text/css">
 
-#world {
-	border:black 1px solid;
+#frame {
+	//border:black 1px solid;
 	position:relative;
 }
 
 .on{
 	background-color:red;
+	position:absolute;
 }
 
 .off{
 	background-color:gray;
+	position:absolute;
+
 }
 
-.square {
-	width:20px;
-	height:20px;
-	position:absolute;
-}
 </style>
+<script src="js/lib/jquery-1.10.1.js"></script>
 <script src="js/life.js"></script>
 <script src="js/HTMLCanvas.js"></script>
 <script>
-	window.onload = function setup(){
+	$jq(document).ready(function() {
 		world = new world( 40,40 );
 		canvas = new HTMLCanvas( world, 15 );
 		canvasElement = canvas.getElement();
-		document.getElementById('body').appendChild( canvasElement );
+		canvasElement.appendTo( $('body') );
 		canvas.draw();
+	});
+	window.onload = function setup(){
+		
 	}
 </script>
 </head>
 <body id="body">
 
-<button onclick="javascript:game.tick()">Step</button>
-<button onclick="javascript:game.playPause()" id="playpause">Play</button>
-<button onclick="javascript:game.clearGrid()">Clear</button>
-<button onclick="javascript:game.randomize()">Randomize</button>
 </body>
 </html>
