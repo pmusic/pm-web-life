@@ -1,8 +1,12 @@
-#frame {
+#game {
   border:black 1px solid;
   position:relative;
 }
 
+#world {
+  background-color:yellow;
+  position:relative;
+}
 .on {
   background-color:red;
   position:absolute;

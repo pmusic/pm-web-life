@@ -2,15 +2,76 @@
 */
 //var $jq = jQuery.noConflict();
 
-var GameOfLife = function(){
-  this.World = function(x, y){
-    this.x = x;
-    this.y = y;
-    
+var GameOfLife = function(w, h){
+  this.World = function(w, h){
+    this.w = w;
+    this.h = h;
+    this.grid = new Array(this.height);
+    for( var c=0; c<this.h; c++ ){
+      this.grid[c] = new Array(this.width);
+    }
+    this.set = function(x, y){
+      this.grid[x][y] = true; 
+    };
+    this.unset = function(x, y){
+      this.grid[x][y] = false;
+    };
   };
   
+  this.step = function(){
+    var tmp_grid = world;
+    console.log(tmp_grid);
+    console.log(self);
+  };
+ 
+  // constructor stuff
+  var test = 'testttt';
+  var w = w;
+  var w = h;
+  var world = new this.World(w, h); 
+  
+  // html stuff
+  var squareSize = 20;
+  var playing;
+  
+  var $game = $('#game');
+  var $world = $('<div id="world"></div>');
+  $world.width( w * squareSize + 'px' );
+  $world.height( h * squareSize + 'px' );
+ 
+  $game.html('');
+  $world.appendTo( $game );
+  
+  // create divs
+  for( var a=0; a < w; a++ ){
+    for( var b=0; b < h; b++ ){
+      var $box = $( "<div></div>", {
+        id: 'b-' + a + '-' + b,
+        "class": 'off',
+        style: 'top:'+ b*squareSize + 'px; left:'+ a*squareSize + 'px'
+      });
+      $box.width(squareSize);
+      $box.height(squareSize);        
+      $box.on('click',{x:a,y:b}, this.step );
+      $box.appendTo( $world );
+    }
+  }
+  
+  // play controllers
+  var $controls = $jq('<div id="controls"></div>');
+    $controls.appendTo($game);
+    
+    var $step = $jq('<button>step</button>');
+    $step.on('click',{world:world},this.step);
+    $step.appendTo($controls);
+    
+    var $play = $jq('<button id="play">play</button>');
+    $play.on('click',{world:world},this.play);
+    $play.appendTo($controls);
 };
 
+$( function(){ game = new GameOfLife(50,50); } );
+/*
 
 var HTMLCanvas = Class.create({
 	initialize: function( world, squareSize ){
@@ -84,7 +145,7 @@ var HTMLCanvas = Class.create({
 		this.frame.appendChild( this.clearButton );
 		this.frame.appendChild( this.randomizeButton );
 		*/
-	},
+/*	},
 	
 	clicked: function( event ){
 		var x = event.data.x;
