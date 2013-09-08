@@ -4,24 +4,101 @@
 
 var GameOfLife = function(w, h){
   this.World = function(w, h){
+    
+    this.blankGrid = function(){
+      var g = new Array(this.w);
+      for( var c=0; c<this.h; c++ ){
+        g[c] = new Array(this.w);
+      }
+      return g;
+    };
+   
+    /**
+     *  counts how many live cells there are next to the cell at (x,y)
+     */ 
+    this.countNeighbors = function(x,y){
+      var neighbors = 0;
+      for( var m = x-1; m<=x+1; m++ ){
+        for( var n = y-1; n<=y+1; n++ ){
+          if( (m==x && n==y ) || m<0 || n<0 || m>=this.w || n>=this.h){
+            continue;
+          }
+          if( this.grid[m][n] ){
+            neighbors++;
+          }
+        }
+      }
+      return neighbors;
+    };
+    
+    /**
+     * returns true if was set to live; false if set to dead
+     */ 
+    this.change = function(x, y){
+      if( this.grid[x][y] ){
+        this.grid[x][y] = null;
+        return false;
+      } else {
+        this.grid[x][y] = true;
+        return true;
+      } 
+    };
+    
+    this.step = function(){
+      console.log(this.grid);
+      var tempGrid = this.blankGrid();
+      
+      for( var x=0; x<this.w; x++ ){
+        for( var y=0; y<this.h; y++ ){
+          var neighbors = this.countNeighbors( x, y );
+  
+          if( this.grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
+            tempGrid[x][y] = true;
+          } else if( this.grid[x][y] == null && neighbors == 3 ){ 
+            tempGrid[x][y] = true;
+          }
+        }
+      }
+  
+      this.grid = tempGrid;
+      console.log(this.grid);
+    };
+    
+    // init stuff 
     this.w = w;
     this.h = h;
-    this.grid = new Array(this.height);
-    for( var c=0; c<this.h; c++ ){
-      this.grid[c] = new Array(this.width);
-    }
-    this.set = function(x, y){
-      this.grid[x][y] = true; 
-    };
-    this.unset = function(x, y){
-      this.grid[x][y] = false;
-    };
+    this.grid = this.blankGrid();
+    
   };
   
   this.step = function(){
-    var tmp_grid = world;
-    console.log(tmp_grid);
-    console.log(self);
+    world.step();
+    //redraw();
+    draw(); //???
+  };
+  
+  var draw = function(){
+    for(var x=0; x<w; x++){
+      for(var y=0; y<h; y++){
+        var square = $('[data-x="' + x + '"][data-y="' + y + '"]');
+        if( world.grid[x][y]){
+          square.removeClass('off').addClass('on');
+        } else {
+          square.removeClass('on').addClass('off');
+        }
+      }
+    }
+  };
+  
+  this.click = function(){
+    var box = $(this);
+    var x = box.data('x');
+    var y = box.data('y');
+    if( world.change(x,y) ){
+      box.removeClass('off').addClass('on');
+    } else {
+      box.removeClass('on').addClass('off');
+    };
   };
  
   // constructor stuff
@@ -42,35 +119,36 @@ var GameOfLife = function(w, h){
   $game.html('');
   $world.appendTo( $game );
   
-  // create divs
+  // create blocks
   for( var a=0; a < w; a++ ){
     for( var b=0; b < h; b++ ){
       var $box = $( "<div></div>", {
-        id: 'b-' + a + '-' + b,
+        "data-x": a,
+        "data-y": b,
         "class": 'off',
         style: 'top:'+ b*squareSize + 'px; left:'+ a*squareSize + 'px'
       });
       $box.width(squareSize);
       $box.height(squareSize);        
-      $box.on('click',{x:a,y:b}, this.step );
+      $box.on('click', this.click);
       $box.appendTo( $world );
     }
   }
   
   // play controllers
-  var $controls = $jq('<div id="controls"></div>');
+  var $controls = $('<div id="controls"></div>');
     $controls.appendTo($game);
     
-    var $step = $jq('<button>step</button>');
+    var $step = $('<button>step</button>');
     $step.on('click',{world:world},this.step);
     $step.appendTo($controls);
     
-    var $play = $jq('<button id="play">play</button>');
+    var $play = $('<button id="play">play</button>');
     $play.on('click',{world:world},this.play);
     $play.appendTo($controls);
 };
 
-$( function(){ game = new GameOfLife(50,50); } );
+$( function(){ game = new GameOfLife(10,10); } );
 /*
 
 var HTMLCanvas = Class.create({
