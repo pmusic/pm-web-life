@@ -1,5 +1,12 @@
+/* general style stuff */
+body {
+  font-family:sans-serif;
+}
+button {
+  width:10em;
+}
+/* game style stuff */
 #game {
-  border:black 1px solid;
   position:relative;
 }
 
@@ -8,11 +15,19 @@
   position:relative;
 }
 .on {
-  background-color:red;
+  background-color:#9BB024;
   position:absolute;
+}
+.on:hover {
+  background-color:#B5CA3B;
+  cursor:pointer;
 }
 
 .off {
-  background-color:gray;
+  background-color:#CCCCCC;
   position:absolute;
+}
+.off:hover {
+  background-color:#DDDDDD;
+  cursor:pointer;
 }

@@ -11,6 +11,9 @@
 var GameOfLife = function(w, h){
   this.World = function(w, h){
     
+    /**
+     * returns a blank grid
+     */
     this.blankGrid = function(){
       var g = new Array(this.w);
       for( var c=0; c<this.h; c++ ){
@@ -18,7 +21,14 @@ var GameOfLife = function(w, h){
       }
       return g;
     };
-   
+    
+    /**
+     * clears the grid
+     */
+    this.blank = function(){
+      this.grid = this.blankGrid();   
+    };
+
     /**
      *  counts how many live cells there are next to the cell at (x,y)
      */ 
@@ -72,30 +82,63 @@ var GameOfLife = function(w, h){
     this.w = w;
     this.h = h;
     this.grid = this.blankGrid();
-    
-  };
-  
+  }; // end World definition
+ 
+  /**
+   * Move forward one step
+   */ 
   var step = function(){
     world.step();
+    setTime(time + 1);
     draw(); 
   };
   
+  /**
+   * Call when the play/pause button is pressed
+   */
   this.playPause = function(){
     var button = $('#play');
     if( interval === null ){ //not running; start
-      interval = setInterval( function(){ step(); }, 1000 );
-      console.log(interval);
-      button.html('Pause');
+      interval = setInterval( function(){ step(); }, frame );
+      button.html('pause');
     } else {
       clearInterval( interval );
       interval = null;
-      button.html('Play');
+      button.html('play');
     }
   };
   
+  /**
+   * create random world
+   */
+  this.random = function(){
+    for(var x=0; x<w; x++){
+      for(var y=0; y<w; y++){
+        if(Math.random() > 0.5){
+          world.grid[x][y] = true;
+        } else {
+          world.grid[x][y] = null;
+        }
+      }
+    } 
+    draw();
+  };
+  
+  /**
+   * clear world
+   */
+  this.clear = function(){
+    world.blank();
+    draw();
+  };
+  
+  /**
+   * Draws the world
+   */
   var draw = function(){
     for(var x=0; x<w; x++){
       for(var y=0; y<h; y++){
+        // TODO is there is a more efficient way to select a div?
         var square = $('[data-x="' + x + '"][data-y="' + y + '"]');
         if( world.grid[x][y]){
           square.removeClass('off').addClass('on');
@@ -105,7 +148,10 @@ var GameOfLife = function(w, h){
       }
     }
   };
-  
+ 
+  /**
+   * Call when a cell is clicked
+   */ 
   this.click = function(){
     var box = $(this);
     var x = box.data('x');
@@ -115,17 +161,31 @@ var GameOfLife = function(w, h){
     } else {
       box.removeClass('on').addClass('off');
     };
+    setTime(0);
   };
- 
-  // constructor stuff
-  var test = 'testttt';
+
+  /**
+   * sets the time.
+   * @param t Time to set to. 
+   */
+  var setTime = function(t){
+    time = t;
+    $time.text(time);
+  };
+
+  /*
+   * init stuff
+   */ 
+  // object stuff ///////////////
   var w = w;
   var w = h;
   var world = new this.World(w, h); 
   var interval = null; //timer
-  // html stuff
+  var time = 0;
+  // time between steps in ms
+  var frame = 500;
+  // html stuff /////////////////
   var squareSize = 20;
-  var playing;
   
   var $game = $('#game');
   var $world = $('<div id="world"></div>');
@@ -153,7 +213,7 @@ var GameOfLife = function(w, h){
   
   // play controllers
   var $controls = $('<div id="controls"></div>');
-  $controls.appendTo($game);
+  $controls.prependTo($game);
   
   var $step = $('<button>step</button>');
   $step.on('click', step);
@@ -165,12 +225,16 @@ var GameOfLife = function(w, h){
   
   var $clearButton = $('<button id="clear">clear</button>');
 	$clearButton.appendTo($controls);
-	//clearButton.onclick = this.clear;
+	$clearButton.on('click', this.clear);
 	
 	var $randomizeButton = $('<button id="randomize">randomize</button>');
 	$randomizeButton.appendTo($controls);
-	// $randomizeButton.onclick = this.randomize;
+	$randomizeButton.on('click', this.random);
 
+  var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
+  var $time = $('<span id="time">0</span>');
+  $clock.appendTo($controls);
+  $time.appendTo($clock);
 };
 
-$( function(){ game = new GameOfLife(10,10); } );
+$( function(){ game = new GameOfLife(45, 45); } );
