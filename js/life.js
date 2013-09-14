@@ -138,8 +138,8 @@ var GameOfLife = function(w, h){
   var draw = function(){
     for(var x=0; x<w; x++){
       for(var y=0; y<h; y++){
-        // TODO is there is a more efficient way to select a div?
-        var square = $('[data-x="' + x + '"][data-y="' + y + '"]');
+        // TODO improve performance by saving an array of the jQuery objects.
+        var square = $('#b-' + x + '-' + y);
         if( world.grid[x][y]){
           square.removeClass('off').addClass('on');
         } else {
@@ -202,6 +202,7 @@ var GameOfLife = function(w, h){
         "data-x": a,
         "data-y": b,
         "class": 'off',
+        'id': 'b-' + a + '-' + b,
         style: 'top:'+ b*squareSize + 'px; left:'+ a*squareSize + 'px'
       });
       $box.width(squareSize);
