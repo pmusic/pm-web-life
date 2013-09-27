@@ -97,15 +97,22 @@ var GameOfLife = function(w, h){
    * Call when the play/pause button is pressed
    */
   this.playPause = function(){
-    var button = $('#play');
     if( interval === null ){ //not running; start
-      interval = setInterval( function(){ step(); }, frame );
-      button.html('pause');
+      start();
     } else {
-      clearInterval( interval );
-      interval = null;
-      button.html('play');
+      stop(); 
     }
+  };
+  
+  var stop = function(){
+    clearInterval( interval );
+    interval = null;
+    $play.html('play');
+  };
+  
+  var start = function(){
+    interval = setInterval( function(){ step(); }, frame );
+    $play.html('pause');
   };
   
   /**
@@ -129,6 +136,7 @@ var GameOfLife = function(w, h){
    */
   this.clear = function(){
     world.blank();
+    setTime(0);
     draw();
   };
   
