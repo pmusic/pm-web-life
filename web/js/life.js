@@ -180,7 +180,13 @@ var GameOfLife = function(w, h){
     time = t;
     $time.text(time);
   };
-
+  
+  /**
+   * Posts world to the server
+   */
+  this.save = function(){
+    alert('todo');
+  };
   /*
    * init stuff
    */ 
@@ -233,12 +239,17 @@ var GameOfLife = function(w, h){
   $play.appendTo($controls);
   
   var $clearButton = $('<button id="clear">clear</button>');
-	$clearButton.appendTo($controls);
 	$clearButton.on('click', this.clear);
+	$clearButton.appendTo($controls);
 	
 	var $randomizeButton = $('<button id="randomize">randomize</button>');
-	$randomizeButton.appendTo($controls);
 	$randomizeButton.on('click', this.random);
+	$randomizeButton.appendTo($controls);
+	
+	var $saveWorld = $('<button id="save">save</button>');
+	$saveWorld.on('click', this.save);
+	$saveWorld.appendTo($controls);
+	
 
   var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
   var $time = $('<span id="time">0</span>');
