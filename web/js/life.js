@@ -11,6 +11,16 @@
 var GameOfLife = function(w, h){
   this.World = function(w, h){
     
+    /*
+    this.loadGrid = function(loadgrid){
+      this.grid = loadgrid;
+    };
+    
+    this.getGrid = function(){
+      return this.grid; 
+    };
+    */
+   
     /**
      * returns a blank grid
      */
@@ -164,6 +174,7 @@ var GameOfLife = function(w, h){
     var box = $(this);
     var x = box.data('x');
     var y = box.data('y');
+    console.log(world);
     if( world.change(x,y) ){
       box.removeClass('off').addClass('on');
     } else {
@@ -185,15 +196,24 @@ var GameOfLife = function(w, h){
    * Posts world to the server
    */
   this.save = function(){
-    alert('todo');
+    savename = 'testname';
+    $.post( '/save', 
+      { name: 'thename', grid: JSON.stringify(world.grid) },
+      function(returned){
+        alert( 'from server: ' + returned );
+      }
+    );
   };
+      
   /*
    * init stuff
    */ 
   // object stuff ///////////////
   var w = w;
-  var w = h;
+  var h = h;
   var world = new this.World(w, h); 
+     
+  
   var interval = null; //timer
   var time = 0;
   // time between steps in ms

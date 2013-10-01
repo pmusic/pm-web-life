@@ -1,7 +1,7 @@
-PM
+PM Web Life
 =====================
 
-HTML5/javaScript implementation of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life)
+An HTML5/javaScript implementation of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
 
 Is currently very much a work in progress. Planned features include:
@@ -15,3 +15,8 @@ Is currently very much a work in progress. Planned features include:
   - Ability to create sets of live cells by dragging
   - Zoom
 
+Installation
+===========
+Make sure you have [Composer](http://getcomposer.org/) installed. Then run `composer.phar install` in the home dir to install the dependencies.
+
+Then just have your php-enabled webserver of choice point to the `web` directory.

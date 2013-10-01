@@ -1,5 +1,14 @@
 {
-    "require": {
-        "silex/silex": "~1.0"
+  "require": {
+    "doctrine/orm": "~2.4",
+    "silex/silex": "~1.0"
+  },
+  "autoload": {
+    "psr-0": {
+      "PMLife": "src/"
     }
+  },
+  "require-dev": {
+    "symfony/browser-kit": ">=2.3,<2.4-dev"
+  }
 }
