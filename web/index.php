@@ -2,6 +2,7 @@
 require_once __DIR__.'/../vendor/autoload.php';
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use PMusic\WorldManager;
 
 $app = new Silex\Application();
 
@@ -19,14 +20,9 @@ $app->get('/', function() use($app) {
 }); 
 
 $app->post('/save', function( Request $request ) use($app) {
-  
-  $sql = 'INSERT INTO WORLDS (name, world_json) VALUES(?, ?)';
-  $stmt = $app['db']->prepare( $sql );
-  $stmt->bindValue( 1, $request->get('name') );
-  $stmt->bindValue( 2, $request->get('grid') );
-  $stmt->execute();
-
-  return "Saved? " . $request->get('name') . ":" . $request->get('grid');
+  $w = new PMusic\WorldManager($app);
+  $w->loadFromJSON( $request->get('name'), $request->get('json') );
+  return $w->save();
 });
 
 $app['debug'] = true;

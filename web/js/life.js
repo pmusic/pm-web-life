@@ -11,16 +11,10 @@
 var GameOfLife = function(w, h){
   this.World = function(w, h){
     
-    /*
     this.loadGrid = function(loadgrid){
       this.grid = loadgrid;
     };
     
-    this.getGrid = function(){
-      return this.grid; 
-    };
-    */
-   
     /**
      * returns a blank grid
      */
@@ -156,7 +150,7 @@ var GameOfLife = function(w, h){
   var draw = function(){
     for(var x=0; x<w; x++){
       for(var y=0; y<h; y++){
-        // TODO improve performance by saving an array of the jQuery objects.
+        // TODO?  improve performance by saving an array of the jQuery objects.
         var square = $('#b-' + x + '-' + y);
         if( world.grid[x][y]){
           square.removeClass('off').addClass('on');
@@ -174,7 +168,6 @@ var GameOfLife = function(w, h){
     var box = $(this);
     var x = box.data('x');
     var y = box.data('y');
-    console.log(world);
     if( world.change(x,y) ){
       box.removeClass('off').addClass('on');
     } else {
@@ -187,22 +180,51 @@ var GameOfLife = function(w, h){
    * sets the time.
    * @param t Time to set to. 
    */
-  var setTime = function(t){
+  var setTime = function(t){    
+    if( t == 0 && time != 0 ){
+      start_state_grid = $.extend( {}, world.grid ); 
+    }
     time = t;
     $time.text(time);
   };
   
+  var warning = function(message){
+    $messages.removeClass().addClass('warning').text(message);
+  };
+  var message = function(message){
+    $messages.removeClass().addClass('notice').text(message);
+  };
+
   /**
    * Posts world to the server
    */
   this.save = function(){
-    savename = 'testname';
+    savename = $('#name-world').val().trim();
+    if( savename.length == 0 ){
+      warning('Please enter a name to save the game as'); 
+      return;
+    }
+
     $.post( '/save', 
-      { name: 'thename', grid: JSON.stringify(world.grid) },
+      { name: savename, grid: JSON.stringify(world.grid) },
       function(returned){
-        alert( 'from server: ' + returned );
+        if(returned=='duplicate'){
+          warning('Not saved; a world with that name has already been saved.');
+        } else if(returned=='saved'){
+          message('Saved!');
+        }
       }
     );
+  };
+ 
+  /**
+   * Returns world to state where t==0
+   */ 
+  this.timeZero = function(){
+    console.log(start_state_grid);
+    world.grid = $.extend({},start_state_grid);
+    setTime(0);
+    draw();
   };
       
   /*
@@ -212,6 +234,8 @@ var GameOfLife = function(w, h){
   var w = w;
   var h = h;
   var world = new this.World(w, h); 
+
+  var start_state_grid = $.extend({},world.grid);
      
   
   var interval = null; //timer
@@ -266,6 +290,8 @@ var GameOfLife = function(w, h){
 	$randomizeButton.on('click', this.random);
 	$randomizeButton.appendTo($controls);
 	
+	$controls.append('Name:<input type="text" id="name-world">');
+
 	var $saveWorld = $('<button id="save">save</button>');
 	$saveWorld.on('click', this.save);
 	$saveWorld.appendTo($controls);
@@ -274,7 +300,15 @@ var GameOfLife = function(w, h){
   var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
   var $time = $('<span id="time">0</span>');
   $clock.appendTo($controls);
-  $time.appendTo($clock);
+  $time.appendTo($controls);
+  
+  var $timeZero = $('<button id="zero">t=0</button>');
+  $timeZero.on('click', this.timeZero);
+  $timeZero.appendTo($controls);
+  
+  //clear the "no javascript" message
+  var $messages = $('#messages');
+  $messages.text('');
 };
 
 $( function(){ game = new GameOfLife(45, 45); } );

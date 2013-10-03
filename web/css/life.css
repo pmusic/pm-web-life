@@ -3,9 +3,23 @@ body {
   font-family:sans-serif;
 }
 button {
-  width:10em;
+  width:100px;
 }
+
 /* game style stuff */
+#messages {
+  border-radius: 4px;
+  padding: 4px;
+}
+.notice {
+  border: 1px solid green;
+  background-color: #eeffee;
+}
+.warning {
+  border: 1px solid red;
+  background-color: #ffeeee;
+}
+
 #game {
   position:relative;
 }
