@@ -7,9 +7,16 @@ class WorldManager {
     $this->app = $app;
   }
 
-  function loadFromJSON( $name, $json ){
+  function load( $name, $json ){
     $this->name = $name;
     $this->json_world = $json;
+  }
+  
+  function setName( $name ){
+    $this->name = $name;
+  }
+  function getName(){
+    return $this->name;
   }
 
   /**
@@ -33,7 +40,7 @@ class WorldManager {
    * @param $name string
    * @return boolean TRUE if there is a duplicate, FALSE if there is no duplicate.
    */
-  function checkDuplicateName($name){
+  function checkDuplicateName(){
     $dup = $this->app['db']->fetchColumn( 'SELECT id from worlds where name=?', array( $this->name ) );
     if( $dup ){
       return true;

@@ -10,6 +10,13 @@ button {
 #messages {
   border-radius: 4px;
   padding: 4px;
+  min-height: 5px;
+  transition: height 1s;
+  -webkit-transition: height 1s;
+}
+.empty {
+  border: 1px solid black;
+  height: 5px;
 }
 .notice {
   border: 1px solid green;
@@ -18,6 +25,7 @@ button {
 .warning {
   border: 1px solid red;
   background-color: #ffeeee;
+  height: 20px;
 }
 
 #game {

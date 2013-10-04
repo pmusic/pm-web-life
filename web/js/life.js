@@ -191,8 +191,14 @@ var GameOfLife = function(w, h){
   var warning = function(message){
     $messages.removeClass().addClass('warning').text(message);
   };
-  var message = function(message){
+  var notice = function(message){
     $messages.removeClass().addClass('notice').text(message);
+  };
+  /**
+   * clear notice or warning message
+   */
+  var clearMessage = function(){
+    $messages.removeClass().addClass('empty').empty();
   };
 
   /**
@@ -211,7 +217,7 @@ var GameOfLife = function(w, h){
         if(returned=='duplicate'){
           warning('Not saved; a world with that name has already been saved.');
         } else if(returned=='saved'){
-          message('Saved!');
+          notice('Saved!');
         }
       }
     );
@@ -225,6 +231,26 @@ var GameOfLife = function(w, h){
     world.grid = $.extend({},start_state_grid);
     setTime(0);
     draw();
+  };
+  
+  /**
+   * TODO: check handling of unicode
+   * TODO: cancel previous checks if they haven't gone out.
+   */
+  var checkDuplicateName = function(){
+    console.log('checking if "' + this.value + '" has a duplicate.');
+    if(!this.value){
+      console.log('blank');
+      return;
+    }
+    $.get('/checkdup/' + escape(this.value), function(returned){
+      if( returned=='t' ){
+        warning('A world with that name already exists.');
+        //todo -- make text box red.
+      } else {
+        clearMessage(); 
+      } 
+    });
   };
       
   /*
@@ -289,8 +315,12 @@ var GameOfLife = function(w, h){
 	var $randomizeButton = $('<button id="randomize">randomize</button>');
 	$randomizeButton.on('click', this.random);
 	$randomizeButton.appendTo($controls);
-	
-	$controls.append('Name:<input type="text" id="name-world">');
+
+  $controls.append('Name:');
+
+  $nameBox = $('<input type="text" id="name-world">');	
+  $nameBox.on('keyup', checkDuplicateName);
+	$controls.append($nameBox);
 
 	var $saveWorld = $('<button id="save">save</button>');
 	$saveWorld.on('click', this.save);
@@ -307,7 +337,7 @@ var GameOfLife = function(w, h){
   $timeZero.appendTo($controls);
   
   //clear the "no javascript" message
-  var $messages = $('#messages');
+  var $messages = $('#messages').addClass('empty');
   $messages.text('');
 };
 
