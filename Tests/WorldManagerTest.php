@@ -5,6 +5,9 @@ require_once '../src/PMusic/WorldManager.php';
 class WorldManagerTest extends PHPUnit_Framework_TestCase {
   
   function setUp(){
+   
+    // should only need to load this once... 
+    $this->testJSON = file_get_contents('testworld.json'); 
     
     //set up test database
     copy( $this->testdbsetup, $this->testdb );
@@ -24,8 +27,11 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     unlink($this->testdb); 
   }
  
-  function test(){
-    $this->assertEquals(1,2);
+  function testLoad(){
+    $name = 'THE NAME';
+    $this->wm->load($name, $this->testJSON);
+    $this->assertEquals($this->wm->getName(), $name);
+    $this->assertEquals($this->wm->getWorld(), $this->testJSON); 
   } 
   
   function testDuplicateName(){
@@ -43,9 +49,23 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     $this->wm->setName('Test Name');
     $this->assertEquals( $this->wm->getName(), 'Test Name' );
   }
+  
+  function testSave(){
+    $numBefore = $this->app['db']->fetchColumn('SELECT COUNT(id) from worlds');
+    $this->wm->setName('Test Name');
+    $this->wm->setWorld($this->testJSON);
+    $this->wm->save();
+    $numAfter = $this->app['db']->fetchColumn('SELECT COUNT(id) from worlds');
+    $this->assertEquals($numBefore, $numAfter-1);
+  }
+  function testSaveDuplicate(){
+    $this->wm->setName('thename');
+    $this->wm->setWorld($this->testJSON);
+    $this->assertEquals($this->wm->save(), 'duplicate');
+  }
  
   private $testdbsetup = '../db/pmweblife-testsetup.db'; 
   private $testdb = '../db/pmweblife-testrun.db';
-  
+  private $testJSON; 
 }
 ?>

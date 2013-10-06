@@ -188,9 +188,15 @@ var GameOfLife = function(w, h){
     $time.text(time);
   };
   
+  /**
+   * Show user warning message
+   */
   var warning = function(message){
     $messages.removeClass().addClass('warning').text(message);
   };
+  /**
+   * Show user notice
+   */
   var notice = function(message){
     $messages.removeClass().addClass('notice').text(message);
   };

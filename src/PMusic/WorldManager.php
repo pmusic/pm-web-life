@@ -7,30 +7,37 @@ class WorldManager {
     $this->app = $app;
   }
 
-  function load( $name, $json ){
-    $this->name = $name;
-    $this->json_world = $json;
+  function load($name, $json){
+    $this->setName($name);
+    $this->setWorld($json);
   }
   
-  function setName( $name ){
+  function setName($name){
     $this->name = $name;
+  }
+
+  function setWorld($json){
+    $this->json_world = $json; 
   }
   function getName(){
     return $this->name;
+  }
+  function getWorld(){
+    return $this->json_world;
   }
 
   /**
    * @return string. 'success' if it was saved, 'duplicate' if it was not saved because a world of that name already exists
    */  
   function save(){
-    if($this->checkDuplicateName($this->name)){
+    if ($this->checkDuplicateName($this->name)){
       return 'duplicate';
     }
 
     $sql = 'INSERT INTO WORLDS (name, world_json) VALUES(?, ?)';
-    $stmt = $this->app['db']->prepare( $sql );
-    $stmt->bindValue( 1, $this->name );
-    $stmt->bindValue( 2, $this->json_world );
+    $stmt = $this->app['db']->prepare($sql);
+    $stmt->bindValue(1, $this->name);
+    $stmt->bindValue(2, $this->json_world);
     $stmt->execute();
     return 'saved';
   }
@@ -41,8 +48,8 @@ class WorldManager {
    * @return boolean TRUE if there is a duplicate, FALSE if there is no duplicate.
    */
   function checkDuplicateName(){
-    $dup = $this->app['db']->fetchColumn( 'SELECT id from worlds where name=?', array( $this->name ) );
-    if( $dup ){
+    $dup = $this->app['db']->fetchColumn('SELECT id from worlds where name=?', array($this->name));
+    if ($dup){
       return true;
     }
     return false;
@@ -55,7 +62,7 @@ class WorldManager {
   static function retrieve(){
   }
   
-  static function delete( $id ){
+  static function delete($id){
     
   }
  
