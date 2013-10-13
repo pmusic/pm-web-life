@@ -65,6 +65,13 @@ class WorldManager {
   static function delete($id){
     
   }
+  
+  /**
+   * @return key/value array of worlds
+   */
+  function worldList(){
+    return $this->app['db']->fetchAll('SELECT id, name FROM worlds ORDER BY name');
+  }
  
   private $id; 
   private $name;

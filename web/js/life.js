@@ -252,13 +252,55 @@ var GameOfLife = function(w, h){
     $.get('/checkdup/' + escape(this.value), function(returned){
       if( returned=='t' ){
         warning('A world with that name already exists.');
-        //todo -- make text box red.
       } else {
         clearMessage(); 
       } 
     });
   };
-      
+   
+  
+  var loadWorld = function(id){
+    $.get('/world/' + id, function(returned){
+      if(returned == 'no world'){
+        console.log('TODO: alert to user');
+        return false;
+      }
+      console.log(returned);
+      world.grid = JSON.parse(returned);
+      setTime(0);
+      draw(); 
+      return true;
+    });
+  }; 
+    
+  this.load = function(){
+    var $modal = $('<div id="loadmodal" class="modal"></div>');
+    $modal.width(500);
+    $modal.height(500);
+    $modal.css({
+      top: '100px',
+      left: '100px'
+    });
+    $modal.titleBar('Load world');
+    
+    var $worldList = $('<select id="worldList"></select>');
+    $.get('/worldlist', function(returned){
+      var list = JSON.parse(returned);
+      for(var index in list){
+        $worldList.append('<option value="' + list[index]['id'] + '">' + list[index]['name'] + '</option>');
+      }
+      $modal.append($worldList);
+      $loadButton = $('<button>Load</button>');
+      $loadButton.on('click', function(){ loadWorld($worldList.val()); });
+
+      $modal.append($loadButton);
+      console.log($worldList); 
+    });
+    $modal.hide();
+    $('body').append($modal);
+    $modal.show('slow');
+  }; 
+
   /*
    * init stuff
    */ 
@@ -268,7 +310,6 @@ var GameOfLife = function(w, h){
   var world = new this.World(w, h); 
 
   var start_state_grid = $.extend({},world.grid);
-     
   
   var interval = null; //timer
   var time = 0;
@@ -276,6 +317,7 @@ var GameOfLife = function(w, h){
   var frame = 500;
   // html stuff /////////////////
   var squareSize = 20;
+  var width = w * squareSize;
   
   var $game = $('#game');
   var $world = $('<div id="world"></div>');
@@ -302,9 +344,13 @@ var GameOfLife = function(w, h){
     }
   }
   
+  $('#frame').width(width);
+  
   // play controllers
-  var $controls = $('<div id="controls"></div>');
+  var $controls = $('<div id="controls" class="controlbox"></div>');
   $controls.prependTo($game);
+  var $manage = $('<div id="manage" class="controlbox"></div>');
+  $manage.prependTo($game);
   
   var $step = $('<button>step</button>');
   $step.on('click', step);
@@ -322,16 +368,19 @@ var GameOfLife = function(w, h){
 	$randomizeButton.on('click', this.random);
 	$randomizeButton.appendTo($controls);
 
-  $controls.append('Name:');
+  $manage.append('Name:');
 
   $nameBox = $('<input type="text" id="name-world">');	
   $nameBox.on('keyup', checkDuplicateName);
-	$controls.append($nameBox);
+	$manage.append($nameBox);
 
 	var $saveWorld = $('<button id="save">save</button>');
 	$saveWorld.on('click', this.save);
-	$saveWorld.appendTo($controls);
+	$manage.append($saveWorld);
 	
+	var $loadWorld = $('<button>load</button>');
+	$loadWorld.on('click', this.load);
+	$manage.append($loadWorld);
 
   var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
   var $time = $('<span id="time">0</span>');
@@ -346,5 +395,21 @@ var GameOfLife = function(w, h){
   var $messages = $('#messages').addClass('empty');
   $messages.text('');
 };
+
+$.fn.extend({
+  titleBar: function(title){
+    var that = this;
+    console.log('running titleBar');
+    $title = $('<div class="modal-title"></div>');
+    $title.append(title);
+    $close = $('<button class="close-button">x</button>');
+    $close.on('click', function(){
+      that.remove();
+    });
+    //todo: close function
+    $title.append($close);
+    this.append($title);
+  }
+});
 
 $( function(){ game = new GameOfLife(45, 45); } );

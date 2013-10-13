@@ -5,12 +5,39 @@ body {
 button {
   width:100px;
 }
+.modal {
+  position:fixed;
+  background-color:#729FCF;
+  border:1px solid #3D77CB;
+  border-radius:0 0 8px 8px;
+  box-shadow: 3px 3px 3px #333333;
+}
+.modal-title {
+  text-align:center;
+  font-weight:bold;
+  width:100%;
+  background-color: #DDDDDD;
+  height:25px
+
+}
+.modal-title .close-button{
+  position:absolute;
+  right:0; 
+  background-color:#EF2929;
+  color:#FFFFFF;
+  height:25px
+}
 
 /* game style stuff */
+#frame {
+  margin-left: auto;
+  margin-right: auto;
+}
 #messages {
-  border-radius: 4px;
   padding: 4px;
-  min-height: 5px;
+  margin: 4px 0;
+  min-height: 3px;
+  border-radius: 4px;
   transition: height 1s;
   -webkit-transition: height 1s;
 }
@@ -27,7 +54,6 @@ button {
   background-color: #ffeeee;
   height: 20px;
 }
-
 #game {
   position:relative;
 }

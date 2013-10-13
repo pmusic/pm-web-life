@@ -63,6 +63,14 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     $this->wm->setWorld($this->testJSON);
     $this->assertEquals($this->wm->save(), 'duplicate');
   }
+  function testWorldList(){
+    $list = $this->wm->worldList();
+    $this->assertEquals(count($list),7);
+  }
+  function testWorldListAlphabetical(){
+    $list = $this->wm->worldList();
+    $this->assertEquals($list, asort($list));    
+  }
  
   private $testdbsetup = '../db/pmweblife-testsetup.db'; 
   private $testdb = '../db/pmweblife-testrun.db';
