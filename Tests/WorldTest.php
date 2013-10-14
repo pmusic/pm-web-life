@@ -32,7 +32,7 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     $world = new PMusic\World($this->app, 5);
     $success = $world->load();
     $this->assertTrue($success);
-    $this->assertEquals('jzjzjzjzjdfsddvds', $world->name);
+    $this->assertEquals('name in database', $world->name);
   }
 
   function testLoad_failure(){
@@ -40,6 +40,56 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     $success = $world->load();
     $this->assertFalse($success);
   }
+  
+  function testSave_newSuccess(){
+    $numBefore = $this->app['db']->fetchColumn('SELECT COUNT(id) from worlds');
+    
+    $world = new PMusic\World($this->app);
+    $world->name = 'Unique New Name';
+    $world->world = 'THIS WOULD BE JSON';
+    $ret = $world->save();
+    
+    $numAfter = $this->app['db']->fetchColumn('SELECT COUNT(id) from worlds');
+    
+    $this->assertTrue($ret);
+    $this->assertEquals($numBefore, $numAfter-1); 
+  }
+  function testSave_modifySuccess(){
+    $new_name = 'Unique New Name';
+    $new_world = 'THIS WOULD BE JSON';    
+    
+    $world = new PMusic\World($this->app, 5);
+    $world->name = $new_name;
+    $world->world = $new_world;
+    $ret = $world->save();
+
+    $this->assertTrue($ret);
+    
+    $w2 = new PMusic\World($this->app, 5);
+    $w2->load();
+    $this->assertEquals($new_name, $w2->name);
+    $this->assertEquals($new_world, $w2->world); 
+
+  }
+  function testSave_duplicateName(){
+    $w = new PMusic\World($this->app);
+    $w->name = 'name in database';
+    $w->world = 'THIS WOULD BE JSON';
+    $ret = $w->save();
+    
+    $this->assertFalse($ret);
+    $this->assertNotEmpty($w->getValidationErrors());
+    
+  }
+  function testSave_emptyVars(){
+    $w = new PMusic\World($this->app);
+    $success = $w->save();
+    
+    $this->assertFalse($success);
+    $this->assertNotEmpty($w->getValidationErrors());
+    //TODO check for particular validation errors
+  }
+
   private $testdbsetup = '../db/pmweblife-testsetup.db'; 
   private $testdb = '../db/pmweblife-testrun.db';
   private $testJSON; 

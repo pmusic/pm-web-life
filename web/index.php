@@ -35,9 +35,15 @@ $app->get('/', function() use($app) {
  * Save world
  */
 $app->post('/save', function( Request $request ) use($app) {
-  $w = new PMusic\WorldManager($app);
-  $w->load( $request->get('name'), $request->get('json') );
-  return $w->save();
+  $id = $request->get('id') ? $request->get('id') : null;
+  $w = new PMusic\World($app, $id);
+  $w->name = $request->get('name');
+  $w->world = $request->get('world');
+  if( $w->save() ){
+    return 'saved';
+  } else {
+    return json_encode($w->getValidationErrors());
+  }
 });
 
 /**
@@ -66,8 +72,9 @@ $app->get('/world/{id}', function( $id ) use( $app ) {
   if($w->load() === false){
     return 'no world';
   }
-  return $w->json;
+  return $w->world;
   
 });
+
 $app->run();
 ?>

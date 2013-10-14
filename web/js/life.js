@@ -9,6 +9,10 @@
  */
 
 var GameOfLife = function(w, h){
+  
+  /**
+   * (Roughly) models the world
+   */
   this.World = function(w, h){
     
     this.loadGrid = function(loadgrid){
@@ -20,7 +24,7 @@ var GameOfLife = function(w, h){
      */
     this.blankGrid = function(){
       var g = new Array(this.w);
-      for( var c=0; c<this.h; c++ ){
+      for(var c = 0; c < this.h; c++){
         g[c] = new Array(this.w);
       }
       return g;
@@ -164,7 +168,7 @@ var GameOfLife = function(w, h){
   /**
    * Call when a cell is clicked
    */ 
-  this.click = function(){
+  var click = function(){
     var box = $(this);
     var x = box.data('x');
     var y = box.data('y');
@@ -173,7 +177,7 @@ var GameOfLife = function(w, h){
     } else {
       box.removeClass('on').addClass('off');
     };
-    setTime(0);
+    setStartState();
   };
 
   /**
@@ -181,9 +185,6 @@ var GameOfLife = function(w, h){
    * @param t Time to set to. 
    */
   var setTime = function(t){    
-    if( t == 0 && time != 0 ){
-      start_state_grid = $.extend( {}, world.grid ); 
-    }
     time = t;
     $time.text(time);
   };
@@ -211,19 +212,28 @@ var GameOfLife = function(w, h){
    * Posts world to the server
    */
   this.save = function(){
-    savename = $('#name-world').val().trim();
+    var savename = $('#name-world').val().trim();
     if( savename.length == 0 ){
       warning('Please enter a name to save the game as'); 
       return;
     }
 
     $.post( '/save', 
-      { name: savename, grid: JSON.stringify(world.grid) },
+      { name: savename, world: JSON.stringify(world.grid) },
       function(returned){
-        if(returned=='duplicate'){
-          warning('Not saved; a world with that name has already been saved.');
-        } else if(returned=='saved'){
+        if(returned=='saved'){
           notice('Saved!');
+        } else {
+          var msg = JSON.parse(returned);
+          var warning = '<ul>';
+          for(var c = 0; c < msg.length; c++){
+            warning += '<li>' + msg[c] + '</li>'; 
+          }
+          warning += '</ul>';
+
+          warning(warning);
+
+          
         }
       }
     );
@@ -240,8 +250,16 @@ var GameOfLife = function(w, h){
   };
   
   /**
+   * Saves current state of the world as the start state
+   */
+  var setStartState = function(){
+    start_state_grid = $.extend({}, world.grid);
+    setTime(0);
+  };
+  
+  /**
    * TODO: check handling of unicode
-   * TODO: cancel previous checks if they haven't gone out.
+   * TODO: cancel previous checks if they haven't come back;
    */
   var checkDuplicateName = function(){
     console.log('checking if "' + this.value + '" has a duplicate.');
@@ -258,46 +276,39 @@ var GameOfLife = function(w, h){
     });
   };
    
-  
-  var loadWorld = function(id){
+  /**
+   * 
+   */ 
+  var load = function(id){
     $.get('/world/' + id, function(returned){
       if(returned == 'no world'){
         console.log('TODO: alert to user');
-        return false;
       }
-      console.log(returned);
       world.grid = JSON.parse(returned);
-      setTime(0);
+      setStartState();
       draw(); 
-      return true;
+      console.log('TODO: close modal');
     });
   }; 
     
-  this.load = function(){
-    var $modal = $('<div id="loadmodal" class="modal"></div>');
-    $modal.width(500);
-    $modal.height(500);
-    $modal.css({
-      top: '100px',
-      left: '100px'
-    });
-    $modal.titleBar('Load world');
+  var loadWindow = function(){
+    var $modal = $('<div id="loadmodal"></div>');
+    $modal.modal({w: 500, h:500, title:'Load World'});
     
     var $worldList = $('<select id="worldList"></select>');
     $.get('/worldlist', function(returned){
       var list = JSON.parse(returned);
-      for(var index in list){
+      for(var index in list){ //TODO: change to indexed for loop; cant count on for/in to do things in order
         $worldList.append('<option value="' + list[index]['id'] + '">' + list[index]['name'] + '</option>');
       }
       $modal.append($worldList);
       $loadButton = $('<button>Load</button>');
-      $loadButton.on('click', function(){ loadWorld($worldList.val()); });
+      $loadButton.on('click', function(){ load($worldList.val()); });
 
       $modal.append($loadButton);
-      console.log($worldList); 
+      
+      $modal.show();
     });
-    $modal.hide();
-    $('body').append($modal);
     $modal.show('slow');
   }; 
 
@@ -339,7 +350,7 @@ var GameOfLife = function(w, h){
       });
       $box.width(squareSize);
       $box.height(squareSize);        
-      $box.on('click', this.click);
+      $box.on('click', click);
       $box.appendTo( $world );
     }
   }
@@ -379,7 +390,7 @@ var GameOfLife = function(w, h){
 	$manage.append($saveWorld);
 	
 	var $loadWorld = $('<button>load</button>');
-	$loadWorld.on('click', this.load);
+	$loadWorld.on('click', loadWindow);
 	$manage.append($loadWorld);
 
   var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
@@ -409,6 +420,23 @@ $.fn.extend({
     //todo: close function
     $title.append($close);
     this.append($title);
+  },
+  modal: function(params){
+    // params: w, h (pixels), title (shown in title bar), id (css id)
+    var w = params.w || 500;
+    var h = params.h || 500;
+    var title = params.title || '';
+    var id = params.id || '';
+    
+    //TODO calculate position
+    this.titleBar(title);
+    this.height(h + 'px');
+    this.width(w + 'px');
+    this.addClass('modal');
+    this.css('margin-left', (-w/2) + 'px');
+    
+    this.hide();
+    $('body').append(this);
   }
 });
 

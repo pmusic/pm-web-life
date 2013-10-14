@@ -54,18 +54,7 @@ class WorldManager {
     }
     return false;
   }
-  
-  static function update($name, $json){
-    
-  }
-
-  static function retrieve(){
-  }
-  
-  static function delete($id){
-    
-  }
-  
+ 
   /**
    * @return key/value array of worlds
    */
