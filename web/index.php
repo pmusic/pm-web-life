@@ -29,7 +29,7 @@ $app->get('/', function() use($app) {
 }); 
 
 
-/* REST ******************************************************/
+/* API ******************************************************/
 
 /**
  * Save world
@@ -61,7 +61,7 @@ $app->get('/checkdup/{name}', function( $name ) use( $app ) {
  * TODO authorization
  */
 $app->get('/worldlist', function() use ($app) {
-  $w = new PMusic\WorldManager($app);
+  $w = new PMusic\World($app);
   $list = $w->worldList();
   return json_encode($list);
 });

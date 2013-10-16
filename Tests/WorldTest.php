@@ -89,6 +89,21 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     $this->assertNotEmpty($w->getValidationErrors());
     //TODO check for particular validation errors
   }
+  function testWorldList(){
+    $w = new PMusic\World($this->app);
+    $list = $w->worldList();
+    $this->assertEquals(count($list),7);
+    
+    return $list;
+  }  
+  /**
+   * @depends testWorldList
+   */
+  function testWorldListAlphabetical(array $list){
+    $this->assertEquals($list, asort($list));    
+  }
+ 
+ 
 
   private $testdbsetup = '../db/pmweblife-testsetup.db'; 
   private $testdb = '../db/pmweblife-testrun.db';

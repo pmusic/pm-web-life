@@ -6,7 +6,7 @@ class WorldManager {
   function __construct($app){
     $this->app = $app;
   }
-
+/*
   function load($name, $json){
     $this->setName($name);
     $this->setWorld($json);
@@ -25,10 +25,11 @@ class WorldManager {
   function getWorld(){
     return $this->json_world;
   }
-
+*/
   /**
    * @return string. 'success' if it was saved, 'duplicate' if it was not saved because a world of that name already exists
    */  
+   /*
   function save(){
     if ($this->checkDuplicateName($this->name)){
       return 'duplicate';
@@ -41,7 +42,7 @@ class WorldManager {
     $stmt->execute();
     return 'saved';
   }
-  
+  */
   /**
    * checks if a world with that name already exists
    * @param $name string

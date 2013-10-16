@@ -92,6 +92,13 @@ class World{
     $this->validation_errors[] = 'Name is a duplicate';
     return true;
   }
+  
+  /**
+   * @return array of worlds
+   */
+  function worldList(){
+    return $this->app['db']->fetchAll('SELECT id, name FROM worlds ORDER BY name');
+  }
    
    
    function getValidationErrors(){
