@@ -51,9 +51,9 @@ $app->post('/save', function( Request $request ) use($app) {
  * TODO: might be more efficient to send an array of existing names?
  */
 $app->get('/checkdup/{name}', function( $name ) use( $app ) {
-  $w = new PMusic\WorldManager($app);
-  $w->setName( $app->escape( $name ) );
-  return $w->checkDuplicateName() ? 't' : 'f';
+  $w = new PMusic\World($app);
+  $w->name = $app->escape( $name );
+  return $w->duplicateName() ? 't' : 'f';
 });
 
 /**

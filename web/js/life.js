@@ -310,7 +310,26 @@ var GameOfLife = function(w, h){
       $modal.show();
     });
     $modal.show('slow');
-  }; 
+  };
+  
+  /**
+   * load the save modal
+   */
+  var saveWindow = function(){
+    var $window = $('<div></div>');
+    $window.modal({w: 500, h: 300, title: 'Save'});
+    
+    $window.append('Name:');
+    $nameBox = $('<input type="text" id="name-world">');	
+    $nameBox.on('keyup', checkDuplicateName);
+  	$window.append($nameBox);
+  
+  	var $saveWorld = $('<button id="save">save</button>');
+  	$saveWorld.on('click', this.save);
+  	$window.append($saveWorld);
+	
+    $window.show();
+  };
 
   /*
    * init stuff
@@ -379,16 +398,10 @@ var GameOfLife = function(w, h){
 	$randomizeButton.on('click', this.random);
 	$randomizeButton.appendTo($controls);
 
-  $manage.append('Name:');
-
-  $nameBox = $('<input type="text" id="name-world">');	
-  $nameBox.on('keyup', checkDuplicateName);
-	$manage.append($nameBox);
-
-	var $saveWorld = $('<button id="save">save</button>');
-	$saveWorld.on('click', this.save);
-	$manage.append($saveWorld);
-	
+  var $saveWorld = $('<button>save</button>');
+  $saveWorld.on('click', saveWindow);
+  $manage.append($saveWorld);
+  
 	var $loadWorld = $('<button>load</button>');
 	$loadWorld.on('click', loadWindow);
 	$manage.append($loadWorld);
