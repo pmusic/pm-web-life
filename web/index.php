@@ -28,6 +28,8 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
   ),
 ));
 
+$app->register(new Silex\Provider\TwigServiceProvider(), array('twig.path' => __DIR__.'/../views'));
+
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile' => __DIR__.'/../log/development.log',
 ));
@@ -39,7 +41,8 @@ $app['debug'] = true;
  * Get main page
  */
 $app->get('/', function() use($app) { 
-    return file_get_contents(__DIR__ . '/../views/life.html'); 
+//    return file_get_contents(__DIR__ . '/../views/life.html'); 
+	return $app['twig']->render('life.twig');
 }); 
 
 
