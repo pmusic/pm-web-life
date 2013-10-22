@@ -18,5 +18,13 @@ class AppTest extends WebTestCase
     $this->assertTrue($client->getResponse()->isOk());
     $this->assertCount(1, $crawler->filter('div[id="game"]'));
   }
+  
+  function testSave(){
+    
+  }
+  
+  function testLoad(){
+    
+  }
 }
 ?>

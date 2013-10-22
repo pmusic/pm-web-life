@@ -1,16 +1,30 @@
-<?
+<?php
 require_once __DIR__.'/../vendor/autoload.php';
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use PMusic\WorldManager;
 use PMusic\World;
+
+switch($_SERVER['PM_WEB_LIFE__PROFILE']){
+	case 'development':
+		require_once( __DIR__.'/../config/development.php');
+		break;
+	case 'test':
+		require_once __DIR__.'/../config/test.php';
+		break;
+	case 'production':
+		require_once __DIR__.'/../config/production.php';
+		break;
+	default:
+		trigger_error('Need to set the variable $_SERVER["PM_WEB_LIFE__PROFILE"]');
+}
+
 
 $app = new Silex\Application();
 
 $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
     'db.options' => array(
     'driver'   => 'pdo_sqlite',
-    'path'     => __DIR__.'/../db/pmweblife.db',
+    'path'     => PM_WEB_LIFE__DBFILE,
   ),
 ));
 
@@ -50,7 +64,7 @@ $app->post('/save', function( Request $request ) use($app) {
  * Determine if the name is a duplicate. 
  * TODO: might be more efficient to send an array of existing names?
  */
-$app->get('/checkdup/{name}', function( $name ) use( $app ) {
+$app->get('/world/checkdupname/{name}', function( $name ) use( $app ) {
   $w = new PMusic\World($app);
   $w->name = $app->escape( $name );
   return $w->duplicateName() ? 't' : 'f';
@@ -77,4 +91,3 @@ $app->get('/world/{id}', function( $id ) use( $app ) {
 });
 
 $app->run();
-?>

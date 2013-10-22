@@ -1,6 +1,5 @@
-<?
+<?php
 namespace PMusic;
-use \Exception;
 
 class World{
   /**
@@ -9,7 +8,7 @@ class World{
    function __construct($app, $id=null){
      $this->app = $app;
      if($id !== null and intval($id) < 1){
-       throw new Exception('$id must be null or a positive integer. Value received was: ' . $id, 1);
+       trigger_error('$id must be null or a positive integer. Value received was: ' . $id, E_USER_ERROR);
      }
      $this->id = $id;
    }
@@ -100,12 +99,14 @@ class World{
     return $this->app['db']->fetchAll('SELECT id, name FROM worlds ORDER BY name');
   }
    
+    /**
+     * @return array of validation errors to show user
+     */ 
+    function getValidationErrors(){
+      return $this->validation_errors; 
+    }
    
-   function getValidationErrors(){
-     return $this->validation_errors; 
-   }
-   
-   public $name, $world, $description;
-   protected $id, $validation_errors = array();
+    public $name, $world, $description;
+    protected $id, $validation_errors = array();
 }
 ?>

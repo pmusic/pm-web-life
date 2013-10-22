@@ -208,20 +208,31 @@ var GameOfLife = function(w, h){
     $messages.removeClass().addClass('empty').empty();
   };
 
+
+  /**
+   * shows message in modal box
+   */  
+  var warningModal = function(message){
+    $('#modalMessage').removeClass('notice').addClass('warning').text(message);
+  };
+  var clearModal = function(){
+    $('#modalMessage').removeClass('notice').removeClass('warning').empty();
+  };
   /**
    * Posts world to the server
    */
-  this.save = function(){
+  var save = function(){
     var savename = $('#name-world').val().trim();
     if( savename.length == 0 ){
-      warning('Please enter a name to save the game as'); 
+      warningModal('Please enter a name to save the game as'); 
       return;
     }
 
     $.post( '/save', 
       { name: savename, world: JSON.stringify(world.grid) },
       function(returned){
-        if(returned=='saved'){
+        if(returned == 'saved'){
+          $('#savemodal').remove();
           notice('Saved!');
         } else {
           var msg = JSON.parse(returned);
@@ -231,9 +242,7 @@ var GameOfLife = function(w, h){
           }
           warning += '</ul>';
 
-          warning(warning);
-
-          
+          warningModal(warning);
         }
       }
     );
@@ -267,11 +276,11 @@ var GameOfLife = function(w, h){
       console.log('blank');
       return;
     }
-    $.get('/checkdup/' + escape(this.value), function(returned){
+    $.get('/world/checkdupname/' + escape(this.value), function(returned){
       if( returned=='t' ){
-        warning('A world with that name already exists.');
+        warningModal('A world with that name already exists.');
       } else {
-        clearMessage(); 
+        clearModal(); 
       } 
     });
   };
@@ -311,12 +320,12 @@ var GameOfLife = function(w, h){
     });
     $modal.show('slow');
   };
-  
+ 
   /**
    * load the save modal
    */
   var saveWindow = function(){
-    var $window = $('<div></div>');
+    var $window = $('<div id="savemodal"></div>');
     $window.modal({w: 500, h: 300, title: 'Save'});
     
     $window.append('Name:');
@@ -325,7 +334,7 @@ var GameOfLife = function(w, h){
   	$window.append($nameBox);
   
   	var $saveWorld = $('<button id="save">save</button>');
-  	$saveWorld.on('click', this.save);
+  	$saveWorld.on('click', save);
   	$window.append($saveWorld);
 	
     $window.show();
@@ -335,6 +344,8 @@ var GameOfLife = function(w, h){
    * init stuff
    */ 
   // object stuff ///////////////
+  var user = new this.User();
+
   var w = w;
   var h = h;
   var world = new this.World(w, h); 
@@ -415,20 +426,102 @@ var GameOfLife = function(w, h){
   $timeZero.on('click', this.timeZero);
   $timeZero.appendTo($controls);
   
+  var $messages = $('#messages');
+  $messages.addClass('empty').addClass('message');
+
   //clear the "no javascript" message
-  var $messages = $('#messages').addClass('empty');
   $messages.text('');
+  
+  var $loginLink = $('<div id="login">Login</div>');
+  $loginLink.on('click', user.loginWindow);
+  $('header').append($loginLink);
 };
 
+GameOfLife.prototype.User = function(){
+  this.validationErrors = new Array();
+  this.username;
+  this.email;
+  this.id;
+  
+  var that = this;
+  
+  var $loginWindow = $('<div id="loginWindow"></div>');
+  $loginWindow.modal({h:200, w:300,title: 'Login'});
+  
+  $('body').append($loginWindow);
+  
+  this.login = function(username, password){
+    
+  };
+  
+  this.create = function(){
+    
+  };
+  
+  this.logout = function(){
+    
+  };
+  
+  this.loginWindow = function(){
+    $loginWindow.empty();
+    $openCreate = $('<div>Create a new user</div>'); 
+    $openCreate.click(that.createWindow);
+    
+    $loginWindow.append($openCreate);
+
+    $form = $('<form name="login"></form>');
+    console.log('in user.loginWindow');
+    $loginWindow.show();
+  };
+  
+  this.createWindow = function(){
+    $loginWindow.empty();
+    var $form = $('<form name="createuser"></form>');
+    $form.input({name: 'username', description: 'User Name'});
+    $form.input({name: 'email', description: 'Email address'});
+    $form.input({name: 'password', description: 'Password', type: 'password'});
+    $form.append('<input type="submit" name="create">');
+    
+    $form.on('submit',that.create);
+    
+    $loginWindow.append($form);
+    
+    $loginWindow.show();
+  };
+ 
+  /**
+   * @
+   */ 
+  this.validate = function(){
+    that.validationErrors = new Array();
+    that.validateUserName();
+    that.validatePassword();
+  };
+  
+  this.validateUserName = function(){
+    if(that.username.length < 4){
+      that.validationErrors['username'] = 'The user name must be longer than three characters';
+    }
+  };
+
+  this.validatePassword = function(){
+    if(that.password.length < 9){
+      that.validationErrors['password'] = 'The password must be at least eight characters.'; 
+    }
+  };
+};
+
+/*
+ * extend jquery
+ */
 $.fn.extend({
   titleBar: function(title){
     var that = this;
-    console.log('running titleBar');
-    $title = $('<div class="modal-title"></div>');
+    var $title = $('<div class="modal-title"></div>');
     $title.append(title);
     $close = $('<button class="close-button">x</button>');
     $close.on('click', function(){
-      that.remove();
+      that.hide(); // or close?
     });
     //todo: close function
     $title.append($close);
@@ -448,8 +541,20 @@ $.fn.extend({
     this.addClass('modal');
     this.css('margin-left', (-w/2) + 'px');
     
+    this.append('<div id="modalMessage" class="message"></div>');
+    
     this.hide();
-    $('body').append(this);
+    $('#head').append(this);
+  },
+  input: function(params){
+    var name = params.name || '';
+    var description = params.description || 'input';
+    var type = params.type || 'text';
+    
+    this.append('<div class="form-description" id="description-' + name + '">' + 
+                  description + 
+                  '</div>' + 
+                  '<input type="' + type + '" name="' + name + '">');
   }
 });
 

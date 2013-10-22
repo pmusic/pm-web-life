@@ -1,11 +1,8 @@
 <?
-$loader = require_once __DIR__.'/../vendor/autoload.php';
-require_once '../src/PMusic/World.php';
-
+require_once 'PMusicTest.php';
 /**
- * TODO make parent class for setup/teardown stuff
  */
-class WorldManagerTest extends PHPUnit_Framework_TestCase {
+class WorldManagerTest extends PMusicTest {
   function setUp(){
    
     // should only need to load this once... 
@@ -35,10 +32,20 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('name in database', $world->name);
   }
 
+  /**
+   * test if searching for world that doesn't exist
+   */
   function testLoad_failure(){
     $world = new PMusic\World($this->app, 2345);
     $success = $world->load();
     $this->assertFalse($success);
+  }
+  
+  /**
+   * @expectedException PHPUnit_Framework_Error
+   */
+  function testLoad_invalid_input(){
+    $world = new PMusic\World($this->app, 'STRING!');
   }
   
   function testSave_newSuccess(){
@@ -96,18 +103,19 @@ class WorldManagerTest extends PHPUnit_Framework_TestCase {
     
     return $list;
   }  
+  
   /**
    * @depends testWorldList
    */
-  function testWorldListAlphabetical(array $list){
-    $this->assertEquals($list, asort($list));    
+  function testWorldList_alphabetical(array $list){
+    function sortWorldNames($a, $b){
+      return strcmp( $a['name'], $b['name']);
+    }
+    $copy = $list;
+    uasort($copy, 'sortWorldNames');
+    
+    $this->assertEquals($list, $copy);
   }
- 
- 
-
-  private $testdbsetup = '../db/pmweblife-testsetup.db'; 
-  private $testdb = '../db/pmweblife-testrun.db';
-  private $testJSON; 
 }
 ?>
   
