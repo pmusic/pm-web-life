@@ -2,29 +2,8 @@
 require_once 'PMusicTest.php';
 /**
  */
-class WorldManagerTest extends PMusicTest {
-  function setUp(){
-   
-    // should only need to load this once... 
-    $this->testJSON = file_get_contents('testworld.json'); 
-    
-    //set up test database
-    copy( $this->testdbsetup, $this->testdb );
-    
-    $this->app = new Silex\Application();
-    
-    $this->app->register(new Silex\Provider\DoctrineServiceProvider(), array(
-        'db.options' => array(
-        'driver'   => 'pdo_sqlite',
-        'path'     => $this->testdb 
-      ),
-    ));
-  }
-  
-  function tearDown(){
-    unlink($this->testdb); 
-  }
-  
+class WorldTest extends PMusicTest {
+ 
   function testLoad_success(){
     $world = new PMusic\World($this->app, 5);
     $success = $world->load();
@@ -46,6 +25,7 @@ class WorldManagerTest extends PMusicTest {
    */
   function testLoad_invalid_input(){
     $world = new PMusic\World($this->app, 'STRING!');
+    $r = $world->load();
   }
   
   function testSave_newSuccess(){

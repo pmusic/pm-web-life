@@ -58,7 +58,18 @@ body {
 button {
   width:100px;
 }
+/**
+ * for elements that act as links
+*/
+.link {
+  cursor:pointer;
+}
+.link:hover {
+  text-decoration:underline;
+}
 header {
+  color:white;
+  font-size:1.9em;
   width:100%;
   position:fixed;
   height:30px;
@@ -66,7 +77,7 @@ header {
   box-shadow:0 0 5px #333333;
 	z-index:1;
 }
-.modal {
+#modal {
   position:fixed;
   top:30px;
   left:50%;
@@ -75,20 +86,24 @@ header {
   border-radius:0 0 8px 8px;
   box-shadow:3px 3px 3px #333333;
 }
-.modal-title {
+#modal .title {
   text-align:center;
   font-weight:bold;
   width:100%;
   background-color:#DDDDDD;
   height:25px
 }
-.modal-title .close-button {
+#modal .close-button {
   position:absolute;
   right:0;
   background-color:#EF2929;
   color:#DD7777;
   height:25px;
   width:25px;
+}
+#modal .body {
+  padding:10px;
+  color:white;
 }
 
 /* game style stuff */

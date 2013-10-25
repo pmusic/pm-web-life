@@ -212,27 +212,22 @@ var GameOfLife = function(w, h){
   /**
    * shows message in modal box
    */  
-  var warningModal = function(message){
-    $('#modalMessage').removeClass('notice').addClass('warning').text(message);
-  };
-  var clearModal = function(){
-    $('#modalMessage').removeClass('notice').removeClass('warning').empty();
-  };
+  
   /**
    * Posts world to the server
    */
   var save = function(){
     var savename = $('#name-world').val().trim();
     if( savename.length == 0 ){
-      warningModal('Please enter a name to save the game as'); 
+      $modal.warning('Please enter a name to save the game as'); 
       return;
     }
 
-    $.post( '/save', 
+    $.post( '/world/save', 
       { name: savename, world: JSON.stringify(world.grid) },
       function(returned){
         if(returned == 'saved'){
-          $('#savemodal').remove();
+          $modal.hide();
           notice('Saved!');
         } else {
           var msg = JSON.parse(returned);
@@ -242,7 +237,7 @@ var GameOfLife = function(w, h){
           }
           warning += '</ul>';
 
-          warningModal(warning);
+          $modal.warning(warning);
         }
       }
     );
@@ -278,9 +273,9 @@ var GameOfLife = function(w, h){
     }
     $.get('/world/checkdupname/' + escape(this.value), function(returned){
       if( returned=='t' ){
-        warningModal('A world with that name already exists.');
+        $modal.warning('A world with that name already exists.');
       } else {
-        clearModal(); 
+        $modal.clearNotice(); 
       } 
     });
   };
@@ -296,18 +291,18 @@ var GameOfLife = function(w, h){
       world.grid = JSON.parse(returned);
       setStartState();
       draw(); 
-      console.log('TODO: close modal');
+
+      $modal.hide();
     });
   }; 
     
   var loadWindow = function(){
-    var $modal = $('<div id="loadmodal"></div>');
-    $modal.modal({w: 500, h:500, title:'Load World'});
+    $modal.title('Load World');
     
     var $worldList = $('<select id="worldList"></select>');
     $.get('/worldlist', function(returned){
       var list = JSON.parse(returned);
-      for(var index in list){ //TODO: change to indexed for loop; cant count on for/in to do things in order
+      for(var index in list){ //TODO: change to indexed for loop; can't count on for/in to do things in order
         $worldList.append('<option value="' + list[index]['id'] + '">' + list[index]['name'] + '</option>');
       }
       $modal.append($worldList);
@@ -318,33 +313,30 @@ var GameOfLife = function(w, h){
       
       $modal.show();
     });
-    $modal.show('slow');
+    $modal.show();
   };
  
   /**
    * load the save modal
    */
   var saveWindow = function(){
-    var $window = $('<div id="savemodal"></div>');
-    $window.modal({w: 500, h: 300, title: 'Save'});
-    
-    $window.append('Name:');
+    $modal.clear(); 
+    $modal.append('Name:');
     $nameBox = $('<input type="text" id="name-world">');	
     $nameBox.on('keyup', checkDuplicateName);
-  	$window.append($nameBox);
+  	$modal.append($nameBox);
   
-  	var $saveWorld = $('<button id="save">save</button>');
-  	$saveWorld.on('click', save);
-  	$window.append($saveWorld);
+  	var $saveButton = $('<button id="save">save</button>');
+  	$saveButton.on('click', save);
+  	$modal.append($saveButton);
 	
-    $window.show();
+    $modal.show();
   };
 
   /*
    * init stuff
    */ 
   // object stuff ///////////////
-  var user = new this.User();
 
   var w = w;
   var h = h;
@@ -428,6 +420,11 @@ var GameOfLife = function(w, h){
   
   var $messages = $('#messages');
   $messages.addClass('empty').addClass('message');
+  
+  
+  var $modal = new this.Modal();
+
+  var user = new this.User($modal);
 
   //clear the "no javascript" message
   $messages.text('');
@@ -437,7 +434,83 @@ var GameOfLife = function(w, h){
   $('header').append($loginLink);
 };
 
-GameOfLife.prototype.User = function(){
+/**
+ * Handles display of "modal" dialog box.
+ * 
+ * Currently can only have one modal at a time
+ * 
+ * A better approach  might be to extend a jQuery object.
+ */
+GameOfLife.prototype.Modal = function(){
+
+  var $modal = $('#modal');
+  var $modalTitle = $('#modal .title span');
+  var $modalBody = $('#modal .body');
+  
+  var $close = $('<button class="close-button">x</button>');
+  $close.on('click', function(){
+    $modal.hide();
+  });
+  $close.appendTo($('#modal .title'));
+  
+  var $message = $('#modal .message');
+   
+  /**
+   * Set the title
+   */
+  this.title = function(title){
+    $modalTitle.empty();
+    $modalTitle.text(title);
+  }
+ 
+  /**
+   * Append content to modal. Can pass jQuery objects or text.
+   */
+  this.append = function($jq){
+    $modalBody.append($jq);
+  }
+  
+  /**
+   * Clears content from modal.
+   */
+  this.empty = function(){
+    $modalBody.empty();
+  }
+  /**
+   * Display a warning message
+   */
+  var warning = function(message){
+    $message.removeClass('notice').addClass('warning').text(message);
+  };
+  
+  /**
+   * Display a notice
+   */
+  var notice = function(message){
+    $message.removeClass('warning').addClass('notice').text(message);
+  }
+  
+  /**
+   * Clear the message box
+   */
+  var clearMessage = function(){
+    $message.removeClass('notice').removeClass('warning').empty();
+  };
+  
+  this.show = function(){
+    $modal.show();
+  }
+  this.hide = function(){
+    $modal.hide();
+  }
+};
+
+/**
+ * Handles user interactions
+ * @param $modal Modal object
+ */
+GameOfLife.prototype.User = function($modal){
+  var $modal = $modal;
   this.validationErrors = new Array();
   this.username;
   this.email;
@@ -445,37 +518,56 @@ GameOfLife.prototype.User = function(){
   
   var that = this;
   
-  var $loginWindow = $('<div id="loginWindow"></div>');
-  $loginWindow.modal({h:200, w:300,title: 'Login'});
-  
-  $('body').append($loginWindow);
-  
   this.login = function(username, password){
     
   };
   
   this.create = function(){
     
+    $.post('/user/create', 
+          {username: $('[name="username"]').val(),
+          password: $('[name="password"]').val(),
+          email: $('[name="email"]').val()}, // TODO? set object values as form fields change
+          function(response){
+            if(response=='created'){
+              that.notice('User created!');
+              //TODO create logout thing
+            } else {
+              console.log('TODO: show error messages');
+            }
+            return false;//?
+          }
+    );
+    return false;
   };
   
   this.logout = function(){
     
   };
   
+  /**
+   * show the login form
+   */
   this.loginWindow = function(){
-    $loginWindow.empty();
-    $openCreate = $('<div>Create a new user</div>'); 
-    $openCreate.click(that.createWindow);
-    
-    $loginWindow.append($openCreate);
+    $modal.empty();
+    $modal.title('Login');
 
-    $form = $('<form name="login"></form>');
-    console.log('in user.loginWindow');
-    $loginWindow.show();
+    var $form = $('<form name="login"></form>');
+    $form.input({name: 'username', description: 'User Name'});
+    $form.input({name: 'password', description: 'Password', type: 'password'});
+    $form.append('<input type="submit" name="create">');
+    $modal.append($form);
+
+    $openCreate = $('<div class="link">Create a new user</div>'); 
+    $openCreate.click(that.createWindow);
+    $modal.append($openCreate);
+
+    $modal.show();
   };
   
   this.createWindow = function(){
-    $loginWindow.empty();
+    $modal.empty();
+    $modal.title('Create a user');
     var $form = $('<form name="createuser"></form>');
     $form.input({name: 'username', description: 'User Name'});
     $form.input({name: 'email', description: 'Email address'});
@@ -484,9 +576,9 @@ GameOfLife.prototype.User = function(){
     
     $form.on('submit',that.create);
     
-    $loginWindow.append($form);
+    $modal.append($form);
     
-    $loginWindow.show();
+    $modal.show();
   };
  
   /**
@@ -515,14 +607,11 @@ GameOfLife.prototype.User = function(){
  * extend jquery
  */
 $.fn.extend({
-  titleBar: function(title){
+/*  titleBar: function(title){
     var that = this;
     var $title = $('<div class="modal-title"></div>');
     $title.append(title);
-    $close = $('<button class="close-button">x</button>');
-    $close.on('click', function(){
-      that.hide(); // or close?
-    });
+    
     //todo: close function
     $title.append($close);
     this.append($title);
@@ -545,7 +634,7 @@ $.fn.extend({
     
     this.hide();
     $('#head').append(this);
-  },
+  }, */
   input: function(params){
     var name = params.name || '';
     var description = params.description || 'input';
