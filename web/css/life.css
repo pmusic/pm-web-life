@@ -153,27 +153,28 @@ header {
 }
 
 #world {
-  background-color:yellow;
   position:relative;
 }
+.container {
+ position:absolute;
+}
 .block {
- border-radius:15%;
- border:2px solid black;
+  border-radius:15%;
+  width:80%;
+  height:80%;
+  margin:auto;
+  cursor:pointer;
 }
 .on {
   background-color:#9BB024;
-  position:absolute;
 }
 .on:hover {
   background-color:#B5CA3B;
-  cursor:pointer;
 }
 
 .off {
   background-color:#CCCCCC;
-  position:absolute;
 }
 .off:hover {
   background-color:#DDDDDD;
-  cursor:pointer;
 }

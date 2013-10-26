@@ -367,17 +367,21 @@ var GameOfLife = function(w, h){
   // create blocks
   for( var a=0; a < w; a++ ){
     for( var b=0; b < h; b++ ){
+      var $container = $('<div></div>', {
+           'class': 'container',
+          style: 'top:'+ b*squareSize + '%; left:'+ a*squareSize + '%'
+      });
       var $box = $( "<div></div>", {
         "data-x": a,
         "data-y": b,
         "class": 'block off',
-        'id': 'b-' + a + '-' + b,
-        style: 'top:'+ b*squareSize + '%; left:'+ a*squareSize + '%'
+        'id': 'b-' + a + '-' + b
       });
-      $box.width(squareSize + '%');
-      $box.height(squareSize + '%');        
+      $container.width(squareSize + '%');
+      $container.height(squareSize + '%');        
       $box.on('click', click);
-      $box.appendTo( $world );
+      $box.appendTo($container);
+      $container.appendTo( $world );
     }
   }
   
