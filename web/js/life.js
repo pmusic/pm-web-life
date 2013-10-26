@@ -115,12 +115,12 @@ var GameOfLife = function(w, h){
   var stop = function(){
     clearInterval( interval );
     interval = null;
-    $play.html('play');
+    $play.html('<span class="icon-pause"></span>play');
   };
   
   var start = function(){
     interval = setInterval( function(){ step(); }, frame );
-    $play.html('pause');
+    $play.html('<span class="icon-pause"></span>pause');
   };
   
   /**
@@ -398,7 +398,7 @@ var GameOfLife = function(w, h){
   $step.on('click', step);
   $step.appendTo($controls);
   
-  var $play = $('<button id="play">play</button>');
+  var $play = $('<button id="play"><span class="icon-play"></span>play</button>');
   $play.on('click', this.playPause);
   $play.appendTo($controls);
   

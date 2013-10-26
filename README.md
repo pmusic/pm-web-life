@@ -3,6 +3,9 @@ PM Web Life
 
 An HTML5/javaScript implementation of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
+Features
+============================
+
 Implemented
 ---
 - History -- Rewind to the "t=0" state of the world.
@@ -24,6 +27,11 @@ Planned Features
   - Zoom
 - Jasmine tests
 
+Technology used
+=================
+- [Silex](http://silex.sensiolabs.org/)
+- Icon fonts generated from [IcoMoon](http://icomoon.io/)
+
 Installation
 ===========
 PHP Dependencies
@@ -32,8 +40,8 @@ Make sure you have [Composer](http://getcomposer.org/) installed. Then run `comp
 
 Database
 ---
-Right now I'm using SQLite. 
+Right now I'm using SQLite. The database file is db/pmweblife.db; a "starter" version is in the git repository.
 
 Web Server
 ---
-Then just have your php-enabled webserver of choice point to the `web` directory.
+Point your php-enabled webserver to the `web` directory.

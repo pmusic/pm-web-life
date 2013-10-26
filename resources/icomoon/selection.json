@@ -1,0 +1,178 @@
+{
+	"IcoMoonType": "selection",
+	"icons": [
+		{
+			"icon": {
+				"paths": [
+					"M64 192h896v192h-896zM64 448h896v192h-896zM64 704h896v192h-896z"
+				],
+				"tags": [
+					"menu",
+					"list",
+					"items",
+					"lines",
+					"options"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 1,
+				"id": 185,
+				"prevSize": 32,
+				"code": 58880,
+				"name": "menu",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M192 128l640 384-640 384z"
+				],
+				"tags": [
+					"play",
+					"media control",
+					"audio"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 2,
+				"id": 267,
+				"prevSize": 32,
+				"code": 58881,
+				"name": "play",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M128 128h320v768h-320zM576 128h320v768h-320z"
+				],
+				"tags": [
+					"pause",
+					"media control",
+					"audio"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 3,
+				"id": 268,
+				"prevSize": 32,
+				"code": 58882,
+				"name": "pause",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M256 896v-768h128v352l320-320v704l-320-320v352z"
+				],
+				"tags": [
+					"previous",
+					"media control",
+					"audio"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 4,
+				"id": 274,
+				"prevSize": 32,
+				"code": 58883,
+				"name": "previous",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M768 128v768h-128v-352l-320 320v-704l320 320v-352z"
+				],
+				"tags": [
+					"next",
+					"media control",
+					"audio"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 5,
+				"id": 275,
+				"prevSize": 32,
+				"code": 58884,
+				"name": "next",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M0 0v1024h1024v-1024h-1024zM960 960h-896v-896h896v896z"
+				],
+				"tags": [
+					"checkbox-unchecked",
+					"unchecked",
+					"square"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 6,
+				"id": 314,
+				"prevSize": 32,
+				"code": 58885,
+				"name": "checkbox-unchecked",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M576 64c247.424 0 448 200.576 448 448s-200.576 448-448 448v-96c94.024 0 182.418-36.614 248.902-103.098 66.484-66.484 103.098-154.878 103.098-248.902 0-94.022-36.614-182.418-103.098-248.902-66.484-66.484-154.878-103.098-248.902-103.098-94.022 0-182.418 36.614-248.902 103.098-51.14 51.138-84.582 115.246-97.306 184.902h186.208l-224 256-224-256h164.57c31.060-217.102 217.738-384 443.43-384zM768 448v128h-256v-320h128v192z"
+				],
+				"tags": [
+					"history",
+					"time",
+					"past",
+					"archive"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 7,
+				"id": 72,
+				"prevSize": 32,
+				"code": 58886,
+				"name": "history",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M896 0h-896v1024h1024v-896l-128-128zM512 128h128v256h-128v-256zM896 896h-768v-768h64v320h576v-320h74.978l53.022 53.018v714.982z"
+				],
+				"tags": [
+					"disk",
+					"save",
+					"floppy"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 8,
+				"id": 97,
+				"prevSize": 32,
+				"code": 58887,
+				"name": "disk",
+				"ligatures": ""
+			}
+		}
+	],
+	"height": 1024,
+	"metadata": {}
+}
