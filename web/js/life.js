@@ -349,14 +349,18 @@ var GameOfLife = function(w, h){
   // time between steps in ms
   var frame = 500;
   // html stuff /////////////////
-  var squareSize = 20;
+  var squareSize = (100/w);
   var width = w * squareSize;
   
   var $game = $('#game');
   var $world = $('<div id="world"></div>');
+  /*
   $world.width( w * squareSize + 'px' );
   $world.height( h * squareSize + 'px' );
- 
+  */
+  $world.width('100%');
+  console.log('width:' + $world.width());
+
   $game.html('');
   $world.appendTo( $game );
   
@@ -366,18 +370,19 @@ var GameOfLife = function(w, h){
       var $box = $( "<div></div>", {
         "data-x": a,
         "data-y": b,
-        "class": 'off',
+        "class": 'block off',
         'id': 'b-' + a + '-' + b,
-        style: 'top:'+ b*squareSize + 'px; left:'+ a*squareSize + 'px'
+        style: 'top:'+ b*squareSize + '%; left:'+ a*squareSize + '%'
       });
-      $box.width(squareSize);
-      $box.height(squareSize);        
+      $box.width(squareSize + '%');
+      $box.height(squareSize + '%');        
       $box.on('click', click);
       $box.appendTo( $world );
     }
   }
   
-  $('#frame').width(width);
+  $('#frame').width('100%');
+  $world.height($world.width());
   
   // play controllers
   var $controls = $('<div id="controls" class="controlbox"></div>');
