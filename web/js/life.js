@@ -115,7 +115,7 @@ var GameOfLife = function(w, h){
   var stop = function(){
     clearInterval( interval );
     interval = null;
-    $play.html('<span class="icon-pause"></span>play');
+    $play.html('<span class="icon-play"></span>play');
   };
   
   var start = function(){
@@ -394,11 +394,11 @@ var GameOfLife = function(w, h){
   var $manage = $('<div id="manage" class="controlbox"></div>');
   $manage.prependTo($game);
   
-  var $step = $('<button>step</button>');
+  var $step = $('<button><span class="icon-next"></span></button>');
   $step.on('click', step);
   $step.appendTo($controls);
   
-  var $play = $('<button id="play"><span class="icon-play"></span>play</button>');
+  var $play = $('<button id="play"><span class="icon-play"></span></button>');
   $play.on('click', this.playPause);
   $play.appendTo($controls);
   
@@ -410,13 +410,13 @@ var GameOfLife = function(w, h){
 	$randomizeButton.on('click', this.random);
 	$randomizeButton.appendTo($controls);
 
-  var $saveWorld = $('<button>save</button>');
+  var $saveWorld = $('<button><span class="icon-disk"></span></button>');
   $saveWorld.on('click', saveWindow);
-  $manage.append($saveWorld);
+  $controls.append($saveWorld);
   
 	var $loadWorld = $('<button>load</button>');
 	$loadWorld.on('click', loadWindow);
-	$manage.append($loadWorld);
+	$controls.append($loadWorld);
 
   var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
   var $time = $('<span id="time">0</span>');
@@ -564,10 +564,10 @@ GameOfLife.prototype.User = function($modal){
     var $form = $('<form name="login"></form>');
     $form.input({name: 'username', description: 'User Name'});
     $form.input({name: 'password', description: 'Password', type: 'password'});
-    $form.append('<input type="submit" name="create">');
+    $form.append('<input type="submit" name="login" value="log in">');
     $modal.append($form);
 
-    $openCreate = $('<div class="link">Create a new user</div>'); 
+    $openCreate = $('<p class="link">Create a new user</p>'); 
     $openCreate.click(that.createWindow);
     $modal.append($openCreate);
 
@@ -616,7 +616,7 @@ GameOfLife.prototype.User = function($modal){
  * extend jquery
  */
 $.fn.extend({
-/*  titleBar: function(title){
+/* titleBar: function(title){
     var that = this;
     var $title = $('<div class="modal-title"></div>');
     $title.append(title);

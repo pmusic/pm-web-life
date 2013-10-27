@@ -80,7 +80,8 @@ header {
 #modal {
   position:fixed;
   top:30px;
-  left:50%;
+  left:0;
+  
   background-color:#729FCF;
   border:1px solid #3D77CB;
   border-radius:0 0 8px 8px;
