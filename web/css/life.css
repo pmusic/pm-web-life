@@ -48,6 +48,20 @@ table {
   border-spacing: 0;
 }
 
+
+/* For modern browsers */
+.clearfix:before,
+.clearfix:after {
+    content:"";
+    display:table;
+}
+.clearfix:after {
+    clear:both;
+}
+/* For IE 6/7 (trigger hasLayout) */
+.clearfix {
+    zoom:1;
+}
 /* 
  * general style stuff 
  * 
@@ -136,13 +150,18 @@ select {
   margin-right: auto;
   padding-top: 35px;
 }
+#topmenu {
+	width: 100%;
+}
+
+#topmenu > div {
+	padding: 2px;
+	height: 2em;
+	margin: 1px;
+}
 #messages {
-  padding:4px;
-  margin:4px 0;
-  min-height:1em;
-  border-radius:4px;
-  transition:height 1s;
-  -webkit-transition:height 1s;
+  border-radius: 4px;
+	float: left;
 }
 .empty {
   border: 1px solid black;
@@ -158,6 +177,24 @@ select {
   height: 20px;
 }
 
+#clock {
+	float:right;
+  border-radius:4px;
+	border: 1px solid black;
+	font-family: monospace;
+	text-align: right;
+	font-size: 1.2em;
+}
+#controls {
+	float:right;
+}
+
+/* buttons */
+.icon-play {
+	color: green;
+}
+
+
 #menulink {
   cursor:pointer;
   padding-right:10px;
@@ -168,6 +205,7 @@ select {
  */
 #game {
   position:relative;
+	clear:left;
 }
 
 #world {

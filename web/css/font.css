@@ -32,16 +32,16 @@
 .icon-pause:before {
 	content: "\e602";
 }
-.icon-previous:before {
-	content: "\e603";
-}
 .icon-next:before {
 	content: "\e604";
 }
 .icon-checkbox-unchecked:before {
 	content: "\e605";
 }
-.icon-history:before {
+.icon-first:before {
+	content: "\e603";
+}
+.icon-loop:before {
 	content: "\e606";
 }
 .icon-disk:before {

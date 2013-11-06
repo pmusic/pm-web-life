@@ -4,26 +4,26 @@
   <title>Conway's Game of Life</title>
   <link rel="stylesheet" type="text/css" href="css/life.css" />
   <link rel="stylesheet" type="text/css" href="css/font.css" />
-  <link rel="stylesheet" type="text/css" href="css/ui-lightness/jquery-ui-1.10.3.custom.css" />
 <!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script> -->
   <script src="js/lib/jquery-1.10.2.js" ></script>
-  <script src="js/lib/jquery-ui-1.10.3.custom.js"></script>
   <script src="js/life.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
   <header>Conway's Game of Life!</header>
   <div id="frame">
-    <div id="messages">
-      Sorry, you need javaScript to play the game!
-    </div>
+		<div id="topmenu" class="clearfix">
+			<div id="messages">
+				Sorry, you need JavaScript to play the game!
+			</div>
+			<div id="controls"></div>
+			<div id="clock">
+				<div>TIME</div>
+				<div id="time">0</div>
+			</div>
+		</div>
     <div id="game">
     </div>
-  </div>
-  <div id="modal">
-  	<div class="title"><span></span></div>
-  	<div class="message"></div>
-  	<div class="body"></div>
   </div>
 
   <div id="menu">
