@@ -55,8 +55,8 @@ table {
 body {
   font-family:sans-serif;
 }
-button {
-  width:100px;
+p {
+  padding-bottom:1em;
 }
 /**
  * for elements that act as links
@@ -69,32 +69,51 @@ button {
 }
 header {
   color:white;
-  font-size:1.9em;
+  font-size:150%;
   width:100%;
   position:fixed;
   height:30px;
   background-color:#729FCF;
   box-shadow:0 0 5px #333333;
-	z-index:1;
+	z-index:10;
 }
-#modal {
+#menu { 
   position:fixed;
   top:30px;
   left:0;
+  height:100%;
+  width:300px;
+  z-index:20;
   
   background-color:#729FCF;
-  border:1px solid #3D77CB;
-  border-radius:0 0 8px 8px;
-  box-shadow:3px 3px 3px #333333;
+  color:#FFF;
+  box-shadow:3px 0px 3px #333333;
   display:none;
 }
-#modal .title {
+#menu a {
+ color:#EFCF02;
+}
+#menu h3 {
   text-align:center;
   font-weight:bold;
+  color:#000;
   width:100%;
   background-color:#DDDDDD;
-  height:25px
+  padding:.5em 0;
+  margin-bottom:10px;
+  box-shadow: inset 0 0 3px #FFF; /*meh*/
 }
+#menu h3:hover {
+  cursor:pointer;
+}
+#menu > div {
+  margin-bottom:10px
+}
+input,
+select {
+	width:100%;
+}
+
 #modal .close-button {
   position:absolute;
   right:0;
@@ -107,6 +126,9 @@ header {
   padding:10px;
   color:white;
 }
+#accordian h3 {
+ background-color:#CCC;
+}
 
 /* game style stuff */
 #frame {
@@ -114,14 +136,13 @@ header {
   margin-right: auto;
   padding-top: 35px;
 }
-/* #messages { */
-.message {
-  padding: 4px;
-  margin: 4px 0;
-  min-height: 3px;
-  border-radius: 4px;
-  transition: height 1s;
-  -webkit-transition: height 1s;
+#messages {
+  padding:4px;
+  margin:4px 0;
+  min-height:1em;
+  border-radius:4px;
+  transition:height 1s;
+  -webkit-transition:height 1s;
 }
 .empty {
   border: 1px solid black;
@@ -137,13 +158,9 @@ header {
   height: 20px;
 }
 
-#login {
-  position:absolute;
-  right: 0;
-  top: 0;
+#menulink {
   cursor:pointer;
-  padding:1px 10px;
-  background-color:#555753;
+  padding-right:10px;
 }
 
 /* 

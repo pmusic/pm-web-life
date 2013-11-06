@@ -115,12 +115,12 @@ var GameOfLife = function(w, h){
   var stop = function(){
     clearInterval( interval );
     interval = null;
-    $play.html('<span class="icon-play"></span>play');
+    $play.html('<span class="icon-play"></span>');
   };
   
   var start = function(){
     interval = setInterval( function(){ step(); }, frame );
-    $play.html('<span class="icon-pause"></span>pause');
+    $play.html('<span class="icon-pause"></span>');
   };
   
   /**
@@ -137,6 +137,7 @@ var GameOfLife = function(w, h){
       }
     } 
     draw();
+    notice('Random world created');
   };
   
   /**
@@ -281,7 +282,7 @@ var GameOfLife = function(w, h){
   };
    
   /**
-   * 
+   * Loads the world with the given id
    */ 
   var load = function(id){
     $.get('/world/' + id, function(returned){
@@ -296,25 +297,24 @@ var GameOfLife = function(w, h){
     });
   }; 
     
-  var loadWindow = function(){
-    $modal.title('Load World');
-    
+  /**
+   * Creates the load form in the menu.
+   */
+  var loadWorldList = function(){
     var $worldList = $('<select id="worldList"></select>');
+    var $form = $('#loadlink').next();
     $.get('/worldlist', function(returned){
       var list = JSON.parse(returned);
       for(var index in list){ //TODO: change to indexed for loop; can't count on for/in to do things in order
         $worldList.append('<option value="' + list[index]['id'] + '">' + list[index]['name'] + '</option>');
       }
-      $modal.append($worldList);
+      $form.append($worldList);
       $loadButton = $('<button>Load</button>');
       $loadButton.on('click', function(){ load($worldList.val()); });
-
-      $modal.append($loadButton);
-      
-      $modal.show();
+      $form.append($loadButton);
     });
-    $modal.show();
   };
+  
  
   /**
    * load the save modal
@@ -332,7 +332,7 @@ var GameOfLife = function(w, h){
 	
     $modal.show();
   };
-
+ 
   /*
    * init stuff
    */ 
@@ -410,14 +410,12 @@ var GameOfLife = function(w, h){
 	$randomizeButton.on('click', this.random);
 	$randomizeButton.appendTo($controls);
 
+	/*
   var $saveWorld = $('<button><span class="icon-disk"></span></button>');
   $saveWorld.on('click', saveWindow);
   $controls.append($saveWorld);
-  
-	var $loadWorld = $('<button>load</button>');
-	$loadWorld.on('click', loadWindow);
-	$controls.append($loadWorld);
-
+  */
+ 
   var $clock = $('<span id="clock">&nbsp;Time:&nbsp;</span>');
   var $time = $('<span id="time">0</span>');
   $clock.appendTo($controls);
@@ -436,11 +434,30 @@ var GameOfLife = function(w, h){
   var user = new this.User($modal);
 
   //clear the "no javascript" message
-  $messages.text('');
+  $messages.html('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.');
+
+  var $menu = $('#menu');
   
-  var $loginLink = $('<div id="login">Login</div>');
-  $loginLink.on('click', user.loginWindow);
-  $('header').append($loginLink);
+  
+  /* accordion functionality */
+  $('#accordion > div').hide();
+  $('#accordion h3').on('click', function(){
+      $('#accordion > div').slideUp();
+      $(this).next().slideDown();
+  });
+ 
+  /* menu link */
+  var $menuLink = $('<span id="menulink" class="icon-menu"></span>');
+  $menuLink.on('click', function(){ $menu.slideToggle(); });
+  $('header').prepend($menuLink);
+  
+  /* behavior for items in menu */
+  
+  $('#loadlink').one('click', function(){
+     console.log('loadlink');
+     loadWorldList(); 
+  })
+  
 };
 
 /**
@@ -449,6 +466,7 @@ var GameOfLife = function(w, h){
  * Currently can only have one modal at a time
  * 
  * A better approach  might be to extend a jQuery object.
+ * Deprecated.
  */
 GameOfLife.prototype.Modal = function(){
 
@@ -520,15 +538,35 @@ GameOfLife.prototype.Modal = function(){
  */
 GameOfLife.prototype.User = function($modal){
   var $modal = $modal;
+
   this.validationErrors = new Array();
   this.username;
   this.email;
   this.id;
+  this.$form = $('[name="user"]');
   
   var that = this;
   
+  this.$form.on('submit', function(){
+    that.login(this.username, this.password);
+    return false;
+  });
+  
+  
   this.login = function(username, password){
-    
+    $.post('/user/login', 
+        {username: $('[name="username"]').val(),
+        password: $('[name="password"]').val() },
+        function(response){
+          if(response == 't'){
+            console.log('logged in');
+            //TODO
+          } else {
+            console.log('not logged in');
+            //TODO
+          }
+        }
+    );
   };
   
   this.create = function(){
@@ -553,26 +591,12 @@ GameOfLife.prototype.User = function($modal){
   this.logout = function(){
     
   };
-  
+ 
   /**
    * show the login form
    */
   this.loginWindow = function(){
-    $modal.empty();
-    $modal.title('Login');
-
-    var $form = $('<form name="login"></form>');
-    $form.input({name: 'username', description: 'User Name'});
-    $form.input({name: 'password', description: 'Password', type: 'password'});
-    $form.append('<input type="submit" name="login" value="log in">');
-    $modal.append($form);
-
-    $openCreate = $('<p class="link">Create a new user</p>'); 
-    $openCreate.click(that.createWindow);
-    $modal.append($openCreate);
-
-    $modal.show();
-  };
+ };
   
   this.createWindow = function(){
     $modal.empty();
@@ -616,34 +640,6 @@ GameOfLife.prototype.User = function($modal){
  * extend jquery
  */
 $.fn.extend({
-/* titleBar: function(title){
-    var that = this;
-    var $title = $('<div class="modal-title"></div>');
-    $title.append(title);
-    
-    //todo: close function
-    $title.append($close);
-    this.append($title);
-  },
-  modal: function(params){
-    // params: w, h (pixels), title (shown in title bar), id (css id)
-    var w = params.w || 500;
-    var h = params.h || 500;
-    var title = params.title || '';
-    var id = params.id || '';
-    
-    //TODO calculate position
-    this.titleBar(title);
-    this.height(h + 'px');
-    this.width(w + 'px');
-    this.addClass('modal');
-    this.css('margin-left', (-w/2) + 'px');
-    
-    this.append('<div id="modalMessage" class="message"></div>');
-    
-    this.hide();
-    $('#head').append(this);
-  }, */
   input: function(params){
     var name = params.name || '';
     var description = params.description || 'input';
@@ -656,4 +652,9 @@ $.fn.extend({
   }
 });
 
-$( function(){ game = new GameOfLife(45, 45); } );
+$( function(){ 
+  game = new GameOfLife(45, 45);
+  /*
+  $( "#accordion" ).accordion();
+  */
+});

@@ -115,6 +115,7 @@ $app->get('/world/{id}', function( $id ) use( $app ) {
   return $w->world;
   
 });
+
 /* 
  * User API
  */
@@ -133,8 +134,9 @@ $app->post('/user/create', function(Request $request) use ( $app ){
 
 $app->post('/user/login', function (Request $request) use ($app){
 	$u = new PMusic\User($app);
-	$u->setPassword($request->get('password'));
-	$u->setUsername($request->get('username'));
+	$authenticated = $u->authenticate($request->get('username'), $request->get('password'));
+	
+	return $authenticated ? 't' : 'f';
 });
 
 $app->run();

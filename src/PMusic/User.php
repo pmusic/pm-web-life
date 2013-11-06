@@ -11,10 +11,19 @@ class User {
     $this->id = $id;
   }
   
+	/**
+	 * 
+	 * @return boolean true if user was loaded, false if it wasn't
+	 */
   function load(){
-	  $sql = 'SELECT * FROM users where id=:id';
-	  //$this->app['db']
-    
+	  $sql = 'SELECT username, password FROM users where id=:id';
+	  $result = $this->app['db']->fetchArray($sql, array('id' => $this->id));
+		if( !$result ){
+			return false;
+		}
+		$this->setUsername($result[0]);
+		$this->password_crypt = $result[1];
+		return true;
   } 
   
   function setPassword($password){
@@ -28,6 +37,7 @@ class User {
   function getUsername(){
     return $this->username;
   }
+  
   
   function validate(){
   	$this->validation_errors = array();
@@ -76,12 +86,24 @@ class User {
   }
 
   private function update(){
-  	
+		$sql = 'UPDATE users WHERE id=:id'
+						. 'SET username=:username,'
+						. 'password=:password';
+  	$params = array(
+				'id' => $this->id,
+				'username' => $this->username,
+				'password' => $this->password_crypt);
   }
   
-  function login($username, $password){
+  /**
+   * 
+   * @param string $username
+   * @param string $password
+   * @return boolean
+   */
+  function authenticate($username, $password){
   	$sql = 'SELECT * FROM users WHERE username = :username';
-  	$u = $this->$app['db']->fetchAssoc($sql, array('username' => $username));
+  	$u = $this->app['db']->fetchAssoc($sql, array('username' => $username));
   	
   	if(!$u){
   		return false;
@@ -92,6 +114,7 @@ class User {
   	
   	if(crypt($password, PM_WEB_LIFE__SALT) == $this->password_crypt){
 	  	$this->app['session']->set('user', array('user_id' => $this->id));	
+	  	return true;
   	} else {
   		return false;
   	}
