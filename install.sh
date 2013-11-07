@@ -1,4 +1,5 @@
 #!/bin/sh
+mkdir log
 touch log/development.log
 
 #create database
