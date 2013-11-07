@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Conway's Game of Life</title>
-  <link rel="stylesheet" type="text/css" href="css/life.css">
-  <link rel="stylesheet" type="text/css" href="css/font.css">
+  <link rel="stylesheet" type="text/css" href="css/life.css" />
+  <link rel="stylesheet" type="text/css" href="css/font.css" />
 <!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script> -->
   <script src="js/lib/jquery-1.10.2.js" ></script>
   <script src="js/life.js"></script>
@@ -12,18 +12,59 @@
 <body>
   <header>Conway's Game of Life!</header>
   <div id="frame">
-    <p>A Javascript/CSS/HTML5 implementation of Conway's Game of Life. Source available at <a href="https://github.com/pmusic/pm-web-life">https://github.com/pmusic/pm-web-life</a>.</p>
-    <p>See: <a href="http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Wikipedia</a> for how to play. Click to create live cells.</p>
-    <div id="messages">
-      Sorry, you need javaScript to play the game!
-    </div>
+		<div id="topmenu" class="clearfix">
+			<div id="messages">
+				Sorry, you need JavaScript to play the game!
+			</div>
+			<div id="controls"></div>
+			<div id="clock">
+				<div>TIME</div>
+				<div id="time">0</div>
+			</div>
+		</div>
     <div id="game">
     </div>
   </div>
-  <div id="modal">
-  	<div class="title"></div>
-  	<div class="message"><span></span></div>
-  	<div class="body"></div>
+
+  <div id="menu">
+	  <div id="accordion">
+	  	<h3>About</h3>
+	  	<div>
+		    <p>A Javascript/CSS/HTML5 implementation of Conway's Game of Life.</p>
+		    <p>Source available at <a href="https://github.com/pmusic/pm-web-life">https://github.com/pmusic/pm-web-life</a>.</p>
+		    <p>See: <a href="http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Wikipedia</a> for how to play. Click to create live cells.</p>
+	  	</div>
+	  	<h3>User</h3>
+	  	<div>
+		  	<form name="user">
+					<div id="username">
+						<div>User Name</div>
+						<input type="text" name="username">
+					</div>
+					<div id="email" style="display:none;">
+						<div>Email</div>
+						<input type="text" name="email">
+					</div>
+					<div id="password">
+						<div>Password</div>
+						<input type="password" name="password">
+					</div>
+					<div id="password2" style="display:none;">
+						<div>Re-enter password</div>
+						<input type="password" name="password2">
+					</div>
+					<input type="submit" value="log in" name="login">
+				</form>
+	  	</div>
+	  	<h3 id="loadlink">Load world</h3>
+	  	<div>
+	  	</div>
+	  	<h3>Save world</h3>
+	  	<div>
+	  		You must be logged in to save a world.
+	  	</div>
+	  </div>
   </div>
+
 </body>
 </html>

@@ -26,11 +26,13 @@ Planned Features
   - Ability to create sets of live cells by dragging
   - Zoom
 - Jasmine tests
+- Asset (css/js) build process
 
 Technology used
 =================
 - [Silex](http://silex.sensiolabs.org/)
 - Icon fonts generated from [IcoMoon](http://icomoon.io/)
+- [jQuery](http://jquery.com/)
 
 Installation
 ===========

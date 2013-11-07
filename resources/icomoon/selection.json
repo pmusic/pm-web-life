@@ -69,27 +69,6 @@
 		{
 			"icon": {
 				"paths": [
-					"M256 896v-768h128v352l320-320v704l-320-320v352z"
-				],
-				"tags": [
-					"previous",
-					"media control",
-					"audio"
-				],
-				"grid": 16
-			},
-			"properties": {
-				"order": 4,
-				"id": 274,
-				"prevSize": 32,
-				"code": 58883,
-				"name": "previous",
-				"ligatures": ""
-			}
-		},
-		{
-			"icon": {
-				"paths": [
 					"M768 128v768h-128v-352l-320 320v-704l320 320v-352z"
 				],
 				"tags": [
@@ -100,7 +79,7 @@
 				"grid": 16
 			},
 			"properties": {
-				"order": 5,
+				"order": 4,
 				"id": 275,
 				"prevSize": 32,
 				"code": 58884,
@@ -121,7 +100,7 @@
 				"grid": 16
 			},
 			"properties": {
-				"order": 6,
+				"order": 5,
 				"id": 314,
 				"prevSize": 32,
 				"code": 58885,
@@ -132,22 +111,48 @@
 		{
 			"icon": {
 				"paths": [
-					"M576 64c247.424 0 448 200.576 448 448s-200.576 448-448 448v-96c94.024 0 182.418-36.614 248.902-103.098 66.484-66.484 103.098-154.878 103.098-248.902 0-94.022-36.614-182.418-103.098-248.902-66.484-66.484-154.878-103.098-248.902-103.098-94.022 0-182.418 36.614-248.902 103.098-51.14 51.138-84.582 115.246-97.306 184.902h186.208l-224 256-224-256h164.57c31.060-217.102 217.738-384 443.43-384zM768 448v128h-256v-320h128v192z"
+					"M128 896v-768h128v352l320-320v320l320-320v704l-320-320v320l-320-320v352z"
 				],
 				"tags": [
-					"history",
-					"time",
-					"past",
-					"archive"
+					"first",
+					"media control",
+					"audio"
+				],
+				"grid": 16
+			},
+			"properties": {
+				"order": 6,
+				"id": 272,
+				"prevSize": 32,
+				"code": 58883,
+				"name": "first",
+				"ligatures": ""
+			}
+		},
+		{
+			"icon": {
+				"paths": [
+					"M128 320h640v192l256-256-256-256v192h-768v384h128zM896 704h-640v-192l-256 256 256 256v-192h768v-384h-128z"
+				],
+				"tags": [
+					"loop",
+					"repeat",
+					"reload",
+					"refresh",
+					"update",
+					"upgrade",
+					"synchronize",
+					"media control",
+					"arrows"
 				],
 				"grid": 16
 			},
 			"properties": {
 				"order": 7,
-				"id": 72,
+				"id": 284,
 				"prevSize": 32,
 				"code": 58886,
-				"name": "history",
+				"name": "loop",
 				"ligatures": ""
 			}
 		},
@@ -167,9 +172,9 @@
 				"order": 8,
 				"id": 97,
 				"prevSize": 32,
-				"code": 58887,
 				"name": "disk",
-				"ligatures": ""
+				"ligatures": "",
+				"code": 58887
 			}
 		}
 	],
