@@ -143,6 +143,7 @@ var GameOfLife = function(w, h){
       }
     } 
     draw();
+    setTime(0);
     notice('Random world created');
   };
   
@@ -293,8 +294,6 @@ var GameOfLife = function(w, h){
       world.grid = JSON.parse(returned);
       setStartState();
       draw(); 
-
-      $modal.hide();
     });
   }; 
     
