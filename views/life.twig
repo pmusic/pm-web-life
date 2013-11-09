@@ -6,21 +6,22 @@
   <link rel="stylesheet" type="text/css" href="css/font.css" />
 <!--  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" ></script> -->
   <script src="js/lib/jquery-1.10.2.js" ></script>
+  <script src="js/lib/jquery.hammer.js" ></script>
   <script src="js/life.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 </head>
 <body>
-  <header>Conway's Game of Life!</header>
+  <header>
+		Conway's Game of Life!
+		<div id="controls"></div>
+		<div id="clock">
+			TIME
+			<span id="time">0</span>
+		</div>
+	</header>
   <div id="frame">
-		<div id="topmenu" class="clearfix">
-			<div id="messages">
-				Sorry, you need JavaScript to play the game!
-			</div>
-			<div id="controls"></div>
-			<div id="clock">
-				<div>TIME</div>
-				<div id="time">0</div>
-			</div>
+		<div id="messages">
+			Sorry, you need JavaScript to play the game!
 		</div>
     <div id="game">
     </div>

@@ -66,6 +66,9 @@ table {
  * general style stuff 
  * 
 */
+html, body {
+	height:100%;
+}
 body {
   font-family:sans-serif;
 }
@@ -107,25 +110,29 @@ header {
 #menu a {
  color:#EFCF02;
 }
-#menu h3 {
-  text-align:center;
-  font-weight:bold;
-  color:#000;
-  width:100%;
-  background-color:#DDDDDD;
-  padding:.5em 0;
-  margin-bottom:10px;
-  box-shadow: inset 0 0 3px #FFF; /*meh*/
+#menu button {
+	width: 100%;
 }
-#menu h3:hover {
+#accordion > h3 {
+  text-align: center;
+  font-weight: bold;
+  color: #000;
+  width: 100%;
+  background-color: #DDDDDD;
+  padding: .5em 0;
+  margin: 1px 0;
+}
+#accordion > h3:hover {
   cursor:pointer;
-}
-#menu > div {
-  margin-bottom:10px
 }
 input,
 select {
-	width:100%;
+	width: 100%;
+	border: 0;
+	margin:3px 0;
+}
+input {
+	border-radius: 5px;
 }
 
 #modal .close-button {
@@ -142,6 +149,9 @@ select {
 }
 #accordian h3 {
  background-color:#CCC;
+}
+#accordion > div {
+	padding: 6px 0;
 }
 
 /* game style stuff */
@@ -161,7 +171,10 @@ select {
 }
 #messages {
   border-radius: 4px;
-	float: left;
+	position: relative;
+	z-index: 20;
+	background: #FFFFFF;
+	margin: 5% 10%;
 }
 .empty {
   border: 1px solid black;
@@ -182,8 +195,8 @@ select {
   border-radius:4px;
 	border: 1px solid black;
 	font-family: monospace;
-	text-align: right;
 	font-size: 1.2em;
+	padding:2px;
 }
 #controls {
 	float:right;
@@ -201,13 +214,16 @@ select {
 }
 
 /* 
- * game grid style stuff
+ * container for grid
  */
 #game {
-  position:relative;
+	width:100%;
+  position:absolute;
+	top:40px;
+	overflow:hidden;
 	clear:left;
 }
-
+/* grid */
 #world {
   position:relative;
 }

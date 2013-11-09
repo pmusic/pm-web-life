@@ -66,6 +66,10 @@ class User {
     }
     return true;
   }
+
+	function  validateEmail(){
+		
+	}
   
   function save(){
 		if($this->id){
@@ -88,11 +92,14 @@ class User {
   private function update(){
 		$sql = 'UPDATE users WHERE id=:id'
 						. 'SET username=:username,'
+						. 'email=:email,'
 						. 'password=:password';
   	$params = array(
 				'id' => $this->id,
 				'username' => $this->username,
+				'email' => $this->email,
 				'password' => $this->password_crypt);
+  	return $this->app['db']->executeUpdate($sql, $params);
   }
   
   /**

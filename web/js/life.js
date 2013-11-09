@@ -332,7 +332,25 @@ var GameOfLife = function(w, h){
 	
     $modal.show();
   };
- 
+	/**
+	 * Call when window is resized
+	 */ 
+ 	var windowResize = function(){
+
+		var innerh = $(window).innerHeight() - 40;
+		var innerw = $(window).innerWidth();
+		if(innerh > innerw){
+			$game.height(innerh);
+			$game.width(innerh);
+		} else {
+			$game.height(innerw);
+			$game.width(innerw);
+		}
+
+		$game.height($(window).innerHeight() - 40 );
+	};
+
+	$(window).resize(windowResize);
   /*
    * init stuff
    */ 
@@ -355,11 +373,14 @@ var GameOfLife = function(w, h){
   var $game = $('#game');
   var $world = $('<div id="world"></div>');
 
-  $world.width('100%');
-
+	windowResize();
   $game.html('');
   $world.appendTo( $game );
-  
+/*
+	$world.on('pinch', function(event){
+		console.log(this, event);
+	});
+ */ 
   // create blocks
   for( var a=0; a < w; a++ ){
     for( var b=0; b < h; b++ ){
@@ -421,14 +442,11 @@ var GameOfLife = function(w, h){
   //clear the "no javascript" message
   $messages.html('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.');
   
-  
   //var $modal = new this.Modal();
 
   var user = new this.User();
 
-
   var $menu = $('#menu');
-  
   
   /* accordion functionality */
   $('#accordion > div').hide();
@@ -447,7 +465,7 @@ var GameOfLife = function(w, h){
   $('#loadlink').one('click', function(){
      console.log('loadlink');
      loadWorldList(); 
-  })
+  });
   
 };
 
