@@ -1,5 +1,5 @@
 #!/bin/sh
-mkdir log
+mkdir -p log
 touch log/development.log
 
 #create database
