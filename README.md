@@ -3,18 +3,21 @@ PM Web Life
 
 An HTML5/javaScript implementation of [Conway's Game of Life](http://en.wikipedia.org/wiki/Conway%27s_Game_of_Life).
 
+A work in progress. A version of it is running [here](http://life.planetariummusic.com/).
+
 Features
 ============================
 
 Implemented
 ---
 - History -- Rewind to the "t=0" state of the world.
-- Save world
+- Generate random world.
 
 Partially Implemented
 ---
 - Save/load worlds
 - PHPUnit Tests
+- Save world
 
 Planned Features
 ---
@@ -26,13 +29,14 @@ Planned Features
   - Ability to create sets of live cells by dragging
   - Zoom
 - Jasmine tests
-- Asset (css/js) build process
 
-Technology used
+Stuff used
 =================
 - [Silex](http://silex.sensiolabs.org/)
 - Icon fonts generated from [IcoMoon](http://icomoon.io/)
 - [jQuery](http://jquery.com/)
+- [SASS](http://sass-lang.com/)
+- [Compass](http://compass-style.org/)
 
 Installation
 ===========
