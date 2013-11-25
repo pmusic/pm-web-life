@@ -3,3 +3,4 @@ vendor
 config/testing.php
 config/development.php
 config/production.php
+compass/.sass-cache

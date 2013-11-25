@@ -144,7 +144,7 @@ var GameOfLife = function(w, h){
     } 
     draw();
     setTime(0);
-    notice('Random world created');
+    notice('Random world created', true);
   };
   
   /**
@@ -199,22 +199,36 @@ var GameOfLife = function(w, h){
   
   /**
    * Show user warning message
+	 * @param {string} message The message to show the user
+	 * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
    */
-  var warning = function(message){
-    $messages.removeClass().addClass('warning').text(message);
+  var warning = function(message, fade){
+		msg(message, 'warning', fade);
   };
+
   /**
-   * Show user notice
+   * Show user a notice
+	 * @param {string} message The message to show the user
+	 * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
    */
-  var notice = function(message){
-    $messages.removeClass().addClass('notice').text(message);
+  var notice = function(message, fade){
+		msg(message, 'notice', fade);
   };
-  /**
-   * clear notice or warning message
-   */
-  var clearMessage = function(){
-    $messages.removeClass().addClass('empty').empty();
-  };
+
+	/**
+	 * @param {string} message The message to show the user
+	 * @param {string} type The type of message. Either 'notice' or 'warning'
+	 * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+	 */
+	var msg = function(message, type, fade){
+    $messages.removeClass().addClass(type);
+		$messages.fadeIn();
+		$messages_msg.html(message);
+		if( fade===true ){
+			setTimeout(function(){ $messages.fadeOut(); }, 5000);
+		}
+
+	}
 
   /**
    * Posts world to the server
@@ -438,9 +452,12 @@ var GameOfLife = function(w, h){
   var $time = $('#time');
   
   var $messages = $('#messages');
-  $messages.addClass('empty').addClass('message');
+	var $messages_msg = $('#messages .msg');
+
+	$('#messages .close').click(function(){ $messages.fadeOut();});
+
   //clear the "no javascript" message
-  $messages.html('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.');
+  notice('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.');
   
   //var $modal = new this.Modal();
 
@@ -494,12 +511,12 @@ GameOfLife.prototype.User = function(){
         {username: $('[name="username"]').val(),
         password: $('[name="password"]').val() },
         function(response){
-          if(response == 't'){
-            console.log('logged in');
-            //TODO
-          } else {
+					console.log(response);
+          if(response == 'f'){
             console.log('not logged in');
             //TODO
+          } else {
+            console.log('logged in');
           }
         }
     );
