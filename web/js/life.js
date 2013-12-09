@@ -34,7 +34,7 @@ var GameOfLife = function (w, h) {
      */
     this.blankGrid = function () {
       var g = new Array(this.w);
-      for (var c = 0; c < this.h; c++) {
+      for (var c = 0; c < this.h; c = c + 1) {
         g[c] = new Array(this.w);
       }
       return g;
@@ -50,7 +50,7 @@ var GameOfLife = function (w, h) {
     /**
      *  counts how many live cells there are next to the cell at (x,y)
      */
-    this.countNeighbors = function (x,y) {
+    this.countNeighbors = function (x, y) {
       var neighbors = 0;
       for (var m = x - 1; m <= x + 1; m = m + 1) {
         for (var n = y - 1; n <= y + 1; n = n + 1) {
@@ -58,7 +58,7 @@ var GameOfLife = function (w, h) {
             continue;
           }
           if (this.grid[m][n]) {
-            neighbors++;
+            neighbors = neighbors + 1;
           }
         }
       }
@@ -82,7 +82,7 @@ var GameOfLife = function (w, h) {
       var tempGrid = this.blankGrid();
 
       for (var x = 0; x < this.w; x = x + 1) {
-        for (var y = 0; y < this.h; y = Y + 1) {
+        for (var y = 0; y < this.h; y = y + 1) {
           var neighbors = this.countNeighbors( x, y );
 
           if( this.grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
@@ -166,12 +166,10 @@ var GameOfLife = function (w, h) {
   var draw = function () {
     for (var x = 0; x < w; x = x + 1) {
       for (var y = 0; y < h; y = y + 1) {
-        // TODO?  improve performance by saving an array of the jQuery objects.
-        var square = $('#b-' + x + '-' + y);
-        if( world.grid[x][y]){
-          square.removeClass('off').addClass('on');
+        if (world.grid[x][y]) {
+          blocks[x][y].removeClass('off').addClass('on');
         } else {
-          square.removeClass('on').addClass('off');
+          blocks[x][y].removeClass('on').addClass('off');
         }
       }
     }
@@ -382,13 +380,15 @@ var GameOfLife = function (w, h) {
 	});
  */
   // create blocks
+	var blocks = [];
   for (var a = 0; a < w; a = a + 1) {
+		blocks[a] = [];
     for (var b = 0; b < h; b++) {
       var $container = $('<div></div>', {
 					'class': 'container',
 					style: 'top:'+ b*squareSize + '%; left:'+ a*squareSize + '%'
       });
-      var $box = $( "<div></div>", {
+			blocks[a][b] = $( "<div></div>", {
 					"data-x": a,
 					"data-y": b,
 					"class": 'block off',
@@ -396,8 +396,8 @@ var GameOfLife = function (w, h) {
       });
       $container.width(squareSize + '%');
       $container.height(squareSize + '%');
-      $box.on('click', click);
-      $box.appendTo($container);
+      blocks[a][b].on('click', click);
+      blocks[a][b].appendTo($container);
       $container.appendTo( $world );
     }
   }
