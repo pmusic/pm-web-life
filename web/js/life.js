@@ -21,10 +21,10 @@ var GameOfLife = function (w, h) {
    */
   this.World = function(w, h){
 
-		/**
-		 *
-		 * @param Array loadgrid
-		 */
+    /**
+     *
+     * @param Array loadgrid
+     */
     this.loadGrid = function (loadgrid) {
       this.grid = loadgrid;
     };
@@ -36,6 +36,9 @@ var GameOfLife = function (w, h) {
       var g = new Array(this.w);
       for (var c = 0; c < this.h; c = c + 1) {
         g[c] = new Array(this.w);
+        for (var d = 0; d < this.w; d = d + 1) {
+          g[c][d] = false;
+        }
       }
       return g;
     };
@@ -70,7 +73,7 @@ var GameOfLife = function (w, h) {
      */
     this.change = function (x, y) {
       if(this.grid[x][y]) {
-        this.grid[x][y] = null;
+        this.grid[x][y] = false;
         return false;
       } else {
         this.grid[x][y] = true;
@@ -85,11 +88,12 @@ var GameOfLife = function (w, h) {
         for (var y = 0; y < this.h; y = y + 1) {
           var neighbors = this.countNeighbors( x, y );
 
-          if( this.grid[x][y] && ( neighbors == 2 || neighbors == 3 )){
+          if ((this.grid[x][y] && (neighbors === 2 || neighbors === 3)) ||
+              (!this.grid[x][y] && neighbors === 3)) {
             tempGrid[x][y] = true;
-          } else if( this.grid[x][y] == null && neighbors == 3 ){
-            tempGrid[x][y] = true;
-          }
+          } else {
+            tempGrid[x][y] = false;
+          } 
         }
       }
 
@@ -167,14 +171,19 @@ var GameOfLife = function (w, h) {
     for (var x = 0; x < w; x = x + 1) {
       for (var y = 0; y < h; y = y + 1) {
         if (world.grid[x][y]) {
-          blocks[x][y].removeClass('off').addClass('on');
+          if(blocks[x][y].hasClass('off')){ // optimization: avoid call to addClass/removeClass
+            blocks[x][y].removeClass('off').addClass('on');
+          }
         } else {
-          blocks[x][y].removeClass('on').addClass('off');
+          if(blocks[x][y].hasClass('on')){ //optimization.
+            blocks[x][y].removeClass('on').addClass('off');
+          }
         }
       }
     }
   };
 
+  
   /**
    * Call when a cell is clicked
    */
@@ -201,35 +210,35 @@ var GameOfLife = function (w, h) {
 
   /**
    * Show user warning message
-	 * @param {string} message The message to show the user
-	 * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+   * @param {string} message The message to show the user
+   * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
    */
   var warning = function (message, fade) {
-		msg(message, 'warning', fade);
+    msg(message, 'warning', fade);
   };
 
   /**
    * Show user a notice
-	 * @param {string} message The message to show the user
-	 * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+   * @param {string} message The message to show the user
+   * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
    */
   var notice = function (message, fade) {
-		msg(message, 'notice', fade);
+    msg(message, 'notice', fade);
   };
 
-	/**
-	 * @param {string} message The message to show the user
-	 * @param {string} type The type of message. Either 'notice' or 'warning'
-	 * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
-	 */
-	var msg = function (message, type, fade) {
+  /**
+   * @param {string} message The message to show the user
+   * @param {string} type The type of message. Either 'notice' or 'warning'
+   * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+   */
+  var msg = function (message, type, fade) {
     $messages.removeClass().addClass(type);
-		$messages.fadeIn();
-		$messages_msg.html(message);
-		if (fade === true) {
-			setTimeout(function () { $messages.fadeOut(); }, 5000);
-		}
-	}
+    $messages.fadeIn();
+    $messages_msg.html(message);
+    if (fade === true) {
+      setTimeout(function () { $messages.fadeOut(); }, 5000);
+    }
+  }
 
   /**
    * Posts world to the server
@@ -330,25 +339,25 @@ var GameOfLife = function (w, h) {
     });
   };
 
-	/**
-	 * Call when window is resized
-	 */
- 	var windowResize = function () {
+  /**
+   * Call when window is resized
+   */
+  var windowResize = function () {
 
-		var innerh = $(window).innerHeight() - 40;
-		var innerw = $(window).innerWidth();
-		if (innerh > innerw) {
-			$game.height(innerh);
-			$game.width(innerh);
-		} else {
-			$game.height(innerw);
-			$game.width(innerw);
-		}
+    var innerh = $(window).innerHeight() - 40;
+    var innerw = $(window).innerWidth();
+    if (innerh > innerw) {
+      $game.height(innerh);
+      $game.width(innerh);
+    } else {
+      $game.height(innerw);
+      $game.width(innerw);
+    }
 
-		$game.height($(window).innerHeight() - 40 );
-	};
+    $game.height($(window).innerHeight() - 40 );
+  };
 
-	$(window).resize(windowResize);
+  $(window).resize(windowResize);
   /*
    * init stuff
    */
@@ -371,28 +380,28 @@ var GameOfLife = function (w, h) {
   var $game = $('#game');
   var $world = $('<div id="world"></div>');
 
-	windowResize();
+  windowResize();
   $game.html('');
   $world.appendTo( $game );
 /*
-	$world.on('pinch', function(event){
-		console.log(this, event);
-	});
+  $world.on('pinch', function(event){
+    console.log(this, event);
+  });
  */
   // create blocks
-	var blocks = [];
+  var blocks = [];
   for (var a = 0; a < w; a = a + 1) {
-		blocks[a] = [];
+    blocks[a] = [];
     for (var b = 0; b < h; b++) {
       var $container = $('<div></div>', {
-					'class': 'container',
-					style: 'top:'+ b*squareSize + '%; left:'+ a*squareSize + '%'
+          'class': 'container',
+          style: 'top:'+ b*squareSize + '%; left:'+ a*squareSize + '%'
       });
-			blocks[a][b] = $( "<div></div>", {
-					"data-x": a,
-					"data-y": b,
-					"class": 'block off',
-					'id': 'b-' + a + '-' + b
+      blocks[a][b] = $( "<div></div>", {
+          "data-x": a,
+          "data-y": b,
+          "class": 'block off',
+          'id': 'b-' + a + '-' + b
       });
       $container.width(squareSize + '%');
       $container.height(squareSize + '%');
@@ -421,19 +430,19 @@ var GameOfLife = function (w, h) {
   $step.appendTo($controls);
 
   var $clearButton = $('<button id="clear">clear</button>');
-	$clearButton.on('click', this.clear);
-	$clearButton.appendTo($controls);
+  $clearButton.on('click', this.clear);
+  $clearButton.appendTo($controls);
 
-	var $randomizeButton = $('<button id="randomize"><span class="icon-loop"></span></button>');
-	$randomizeButton.on('click', this.random);
-	$randomizeButton.appendTo($controls);
+  var $randomizeButton = $('<button id="randomize"><span class="icon-loop"></span></button>');
+  $randomizeButton.on('click', this.random);
+  $randomizeButton.appendTo($controls);
 
   var $time = $('#time');
 
   var $messages = $('#messages');
-	var $messages_msg = $('#messages .msg');
+  var $messages_msg = $('#messages .msg');
 
-	$('#messages .close').click(function () { $messages.fadeOut();});
+  $('#messages .close').click(function () { $messages.fadeOut();});
 
   //clear the "no javascript" message
   notice('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.');
@@ -488,7 +497,7 @@ GameOfLife.prototype.User = function () {
         {username: $('[name="username"]').val(),
         password: $('[name="password"]').val() },
         function(response){
-					console.log(response);
+          console.log(response);
           if(response == 'f'){
             console.log('not logged in');
             //TODO
