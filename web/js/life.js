@@ -10,20 +10,24 @@
 
 /**
  *
- * @param integer w width of grid
- * @param integer h height of grid
+ * @param {integer} w width of grid
+ * @param {integer} h height of grid
  * @returns {GameOfLife}
  */
 var GameOfLife = function (w, h) {
 
   /**
-   * (Roughly) models the world
+   * Handles the "world" -- the grid of cells
+   * 
+   * @param {integer} w The number of cells wide
+   * @param {integer} h The number of cells high
+   * @returns {undefined}
    */
   this.World = function(w, h){
 
     /**
      *
-     * @param Array loadgrid
+     * @param {Array} loadgrid
      */
     this.loadGrid = function (loadgrid) {
       this.grid = loadgrid;
@@ -49,6 +53,18 @@ var GameOfLife = function (w, h) {
     this.blank = function () {
       this.grid = this.blankGrid();
     };
+
+    this.random = function () {
+      for (var x = 0; x < w; x = x + 1) {
+        for (var y = 0; y < w; y = y + 1) {
+          if (Math.random() > 0.5) {
+            this.grid[x][y] = true;
+          } else {
+            this.grid[x][y] = null;
+          }
+        }
+      }
+    }
 
     /**
      *  counts how many live cells there are next to the cell at (x,y)
@@ -141,15 +157,7 @@ var GameOfLife = function (w, h) {
    * create random world
    */
   this.random = function () {
-    for (var x = 0; x < w; x = x + 1) {
-      for (var y = 0; y < w; y = y + 1) {
-        if (Math.random() > 0.5) {
-          world.grid[x][y] = true;
-        } else {
-          world.grid[x][y] = null;
-        }
-      }
-    }
+    world.random();
     draw();
     setTime(0);
     notice('Random world created', true);
@@ -211,7 +219,7 @@ var GameOfLife = function (w, h) {
   /**
    * Show user warning message
    * @param {string} message The message to show the user
-   * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+   * @param {boolean} fade whether to fade the message out after five seconds. Defaults to false.
    */
   var warning = function (message, fade) {
     msg(message, 'warning', fade);
@@ -220,7 +228,7 @@ var GameOfLife = function (w, h) {
   /**
    * Show user a notice
    * @param {string} message The message to show the user
-   * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+   * @param {boolean} fade whether to fade the message out after five seconds. Defaults to false.
    */
   var notice = function (message, fade) {
     msg(message, 'notice', fade);
@@ -476,7 +484,6 @@ var GameOfLife = function (w, h) {
 
 /**
  * Handles user interactions
- * @param $modal Modal object
  */
 GameOfLife.prototype.User = function () {
 
