@@ -445,7 +445,7 @@ var GameOfLife = function (w, h) {
   $('#messages .close').click(function () { $messages.fadeOut();});
 
   //clear the "no javascript" message
-  notice('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.');
+  notice('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.', true);
 
   var user = new this.User();
 
@@ -454,8 +454,10 @@ var GameOfLife = function (w, h) {
   /* accordion functionality */
   $('#accordion > div').hide();
   $('#accordion h3').on('click', function () {
-      $('#accordion > div').slideUp();
-      $(this).next().slideDown();
+      if ($(this).next().is(':hidden')) {
+        $('#accordion > div').slideUp();
+        $(this).next().slideDown();
+      }
   });
 
   /* menu link */
