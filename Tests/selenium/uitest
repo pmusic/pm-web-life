@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://life.zeit/" />
+<title>uitest</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">uitest</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=b-1-0</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-1-0@class</td>
+	<td>block on</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=b-0-1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-0-1@class</td>
+	<td>block on</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=b-1-2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='controls']/button[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-1-1@class</td>
+	<td>block on</td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-0-1@class</td>
+	<td>block on</td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-0-0@class</td>
+	<td>block off</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='controls']/button[3]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-0-1@class</td>
+	<td>block off</td>
+</tr>
+<tr>
+	<td>assertAttribute</td>
+	<td>id=b-1-1@class</td>
+	<td>block off</td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
