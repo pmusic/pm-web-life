@@ -116,6 +116,32 @@ var GameOfLife = function (w, h) {
       this.grid = tempGrid;
     };
 
+
+    /**
+     * Returns a serialized version of the world for storage.
+     * The format is a JSONified array of arrays, where each child array has the
+     * x and y coordinates of an "on" cell.
+     * 
+     * @returns {string} 
+     */
+    this.getSerialized = function () {
+      var serialize = [];
+
+      for (var x = 0; x < this.w; x = x + 1) {
+        for (var y = 0; y < this.h; y = y + 1) {
+          if (this.grid[x][y]) {
+            serialize.push([x, y]);
+          }
+        }
+      }
+
+      return JSON.stringify(serialize);
+    };
+
+    this.loadSerialized = function (serialized) {
+      
+    };
+
     // init stuff
     this.w = w;
     this.h = h;
@@ -218,7 +244,7 @@ var GameOfLife = function (w, h) {
 
   /**
    * Show user warning message
-   * @param {string} message The message to show the user
+   * @param {string/element} message The message to show the user
    * @param {boolean} fade whether to fade the message out after five seconds. Defaults to false.
    */
   var warning = function (message, fade) {
@@ -227,7 +253,7 @@ var GameOfLife = function (w, h) {
 
   /**
    * Show user a notice
-   * @param {string} message The message to show the user
+   * @param {string/elemnt} message The message to show the user
    * @param {boolean} fade whether to fade the message out after five seconds. Defaults to false.
    */
   var notice = function (message, fade) {
@@ -235,14 +261,14 @@ var GameOfLife = function (w, h) {
   };
 
   /**
-   * @param {string} message The message to show the user
+   * @param {string/element} message The message to show the user
    * @param {string} type The type of message. Either 'notice' or 'warning'
    * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
    */
   var msg = function (message, type, fade) {
     $messages.removeClass().addClass(type);
     $messages.fadeIn();
-    $messages_msg.html(message);
+    $messages_msg.empty().append(message);
     if (fade === true) {
       setTimeout(function () { $messages.fadeOut(); }, 5000);
     }
@@ -272,7 +298,7 @@ var GameOfLife = function (w, h) {
           }
           warning += '</ul>';
 
-          $modal.warning(warning);
+          warning(warning);
         }
       }
     );
@@ -297,17 +323,16 @@ var GameOfLife = function (w, h) {
   };
 
   /**
-   * TODO: check handling of unicode
    * TODO: cancel previous checks if they haven't come back;
    */
   var checkDuplicateName = function () {
     console.log('checking if "' + this.value + '" has a duplicate.');
-    if(!this.value){
+    if (!this.value) {
       console.log('blank');
       return;
     }
     $.get('/world/checkdupname/' + escape(this.value), function (returned) {
-      if( returned=='t' ){
+      if (returned == 't') {
         $modal.warning('A world with that name already exists.');
       } else {
         $modal.clearNotice();
@@ -320,7 +345,7 @@ var GameOfLife = function (w, h) {
    */
   var load = function (id) {
     $.get('/world/' + id, function(returned){
-      if(returned == 'no world'){
+      if (returned == 'no world') {
         console.log('TODO: alert to user');
       }
       world.grid = JSON.parse(returned);
@@ -347,6 +372,13 @@ var GameOfLife = function (w, h) {
     });
   };
 
+  /* handler for file save button */
+  $('#filesave').click(function () {
+    var msg = '<div>Copy the following:</div>';
+    msg += '<textarea style="width:100%;">' + world.getSerialized() + '</textarea>';
+    notice(msg);
+  });
+
   /**
    * Call when window is resized
    */
@@ -369,7 +401,6 @@ var GameOfLife = function (w, h) {
   /*
    * init stuff
    */
-  // object stuff ///////////////
 
   var w = w;
   var h = h;
