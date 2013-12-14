@@ -139,7 +139,14 @@ var GameOfLife = function (w, h) {
     };
 
     this.loadSerialized = function (serialized) {
-      
+      var imported = JSON.parse(serialized);
+      this.blankGrid();
+      for (var n = 0; n < imported.length; n = n + 1) {
+        if (isNaN(imported[n][0]) || isNaN(imported[n][1])) {
+          throw 'Invalid input';
+        }
+        this.grid[imported[n][0]][imported[n][1]] = true;
+      }
     };
 
     // init stuff
@@ -201,7 +208,7 @@ var GameOfLife = function (w, h) {
   /**
    * Draws the world
    */
-  var draw = function () {
+  var draw = function draw() {
     for (var x = 0; x < w; x = x + 1) {
       for (var y = 0; y < h; y = y + 1) {
         if (world.grid[x][y]) {
@@ -253,7 +260,7 @@ var GameOfLife = function (w, h) {
 
   /**
    * Show user a notice
-   * @param {string/elemnt} message The message to show the user
+   * @param {string/element} message The message to show the user
    * @param {boolean} fade whether to fade the message out after five seconds. Defaults to false.
    */
   var notice = function (message, fade) {
@@ -263,7 +270,7 @@ var GameOfLife = function (w, h) {
   /**
    * @param {string/element} message The message to show the user
    * @param {string} type The type of message. Either 'notice' or 'warning'
-   * @param {boolean} fadeout whether to fade the message out after five seconds. Defaults to false.
+   * @param {boolean} fade whether to fade the message out after five seconds. Defaults to false.
    */
   var msg = function (message, type, fade) {
     $messages.removeClass().addClass(type);
@@ -272,14 +279,15 @@ var GameOfLife = function (w, h) {
     if (fade === true) {
       setTimeout(function () { $messages.fadeOut(); }, 5000);
     }
-  }
+    $menu.slideUp();
+  };
 
   /**
    * Posts world to the server
    */
   var save = function () {
     var savename = $('#name-world').val().trim();
-    if ( savename.length == 0 ) {
+    if ( savename.length === 0 ) {
       $modal.warning('Please enter a name to save the game as');
       return;
     }
@@ -376,7 +384,28 @@ var GameOfLife = function (w, h) {
   $('#filesave').click(function () {
     var msg = '<div>Copy the following:</div>';
     msg += '<textarea style="width:100%;">' + world.getSerialized() + '</textarea>';
+    $menu.slideToggle(); 
     notice(msg);
+  });
+
+  $('#fileload').click(function () {
+    var $loaddiv = $('<div id="load"></div>');
+    var msg = '<div id="loadmsg"></div>'; 
+    msg += '<div>Copy world save below</div>';
+    msg += '<textarea style="width:100%;" name="pasteworld" id="pasteworld"></textarea>';
+
+    var $loadbutton = $('<button>Load world</button>').click( function () {
+      try {
+        world.loadSerialized($('#pasteworld').val());
+        draw();
+        notice('World  loaded!', true);
+      } catch (error) {
+        $('#loadmsg').empty().append(error);        
+      }
+
+    });
+    $loaddiv.append(msg).append($loadbutton);
+    notice($loaddiv);
   });
 
   /**
@@ -483,11 +512,10 @@ var GameOfLife = function (w, h) {
 
   $('#messages .close').click(function () { $messages.fadeOut();});
 
-  //clear the "no javascript" message
-  notice('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.', true);
 
   var user = new this.User();
 
+  /* TODO make an object to handle all the menu stuff */
   var $menu = $('#menu');
 
   /* accordion functionality */
@@ -507,10 +535,11 @@ var GameOfLife = function (w, h) {
   /* behavior for items in menu */
 
   $('#loadlink').one('click', function () {
-     console.log('loadlink');
      loadWorldList();
   });
 
+  //clear the "no javascript" message
+  notice('Welcome! For information, open the menu (&quot;<span class="icon-menu"></span>&quot;) in the upper left-hand corner.', true);
 };
 
 /**
