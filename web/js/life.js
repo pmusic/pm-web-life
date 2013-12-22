@@ -140,7 +140,7 @@ var GameOfLife = function (w, h) {
 
     this.loadSerialized = function (serialized) {
       var imported = JSON.parse(serialized);
-      this.blankGrid();
+      this.grid = this.blankGrid();
       for (var n = 0; n < imported.length; n = n + 1) {
         if (isNaN(imported[n][0]) || isNaN(imported[n][1])) {
           throw 'Invalid input';
@@ -182,7 +182,7 @@ var GameOfLife = function (w, h) {
   };
 
   var start = function () {
-    interval = setInterval( function(){ step(); }, frame );
+    interval = setInterval( step, frame );
     $play.html('<span class="icon-pause"></span>');
   };
 
@@ -316,7 +316,6 @@ var GameOfLife = function (w, h) {
    * Returns world to state where t==0
    */
   this.timeZero = function () {
-    console.log(start_state_grid);
     world.grid = $.extend({},start_state_grid);
     setTime(0);
     draw();
@@ -356,7 +355,7 @@ var GameOfLife = function (w, h) {
       if (returned == 'no world') {
         console.log('TODO: alert to user');
       }
-      world.grid = JSON.parse(returned);
+      world.loadSerialized(returned);
       setStartState();
       draw();
     });
@@ -383,9 +382,10 @@ var GameOfLife = function (w, h) {
   /* handler for file save button */
   $('#filesave').click(function () {
     var msg = '<div>Copy the following:</div>';
-    msg += '<textarea style="width:100%;">' + world.getSerialized() + '</textarea>';
-    $menu.slideToggle(); 
+    msg += '<textarea style="width:100%;" id="savetextarea">' + world.getSerialized() + '</textarea>';
+    msg += '<div>(ctrl-c to copy)</div>';
     notice(msg);
+    $('#savetextarea').select();
   });
 
   $('#fileload').click(function () {
