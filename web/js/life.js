@@ -7,7 +7,7 @@
  * dot
  * com
  */
-
+'use strict';
 /**
  *
  * @param {integer} w width of grid
@@ -339,7 +339,7 @@ var GameOfLife = function (w, h) {
       return;
     }
     $.get('/world/checkdupname/' + escape(this.value), function (returned) {
-      if (returned == 't') {
+      if (returned === 't') {
         $modal.warning('A world with that name already exists.');
       } else {
         $modal.clearNotice();
@@ -352,8 +352,8 @@ var GameOfLife = function (w, h) {
    */
   var load = function (id) {
     $.get('/world/' + id, function(returned){
-      if (returned == 'no world') {
-        console.log('TODO: alert to user');
+      if (returned === 'no world') {
+        warning('Error loading world');
       }
       world.loadSerialized(returned);
       setStartState();
@@ -373,8 +373,11 @@ var GameOfLife = function (w, h) {
         $worldList.append('<option value="' + list[index]['id'] + '">' + list[index]['name'] + '</option>');
       }
       $form.append($worldList);
-      $loadButton = $('<button>Load</button>');
-      $loadButton.on('click', function(){ load($worldList.val()); });
+      var $loadButton = $('<button>Load</button>');
+      $loadButton.on('click', function(){ 
+        load($worldList.val()); 
+        $menu.slideUp();
+      });
       $form.append($loadButton);
     });
   };
